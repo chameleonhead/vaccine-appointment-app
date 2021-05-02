@@ -7,6 +7,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{170A7DBE-46C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VaccineAppointment.Web", "src\VaccineAppointment.Web\VaccineAppointment.Web.csproj", "{6DCECF24-9F70-419C-A623-A4819FD966F8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{893C0FF6-526B-4994-BBA4-D541C0C11272}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VaccineAppointment.Web.Tests", "test\VaccineAppointment.Web.Tests\VaccineAppointment.Web.Tests.csproj", "{1F1F7006-8A92-4C59-B1B5-EBE14A92FAA7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,8 +36,21 @@ Global
 		{6DCECF24-9F70-419C-A623-A4819FD966F8}.Release|x64.Build.0 = Release|Any CPU
 		{6DCECF24-9F70-419C-A623-A4819FD966F8}.Release|x86.ActiveCfg = Release|Any CPU
 		{6DCECF24-9F70-419C-A623-A4819FD966F8}.Release|x86.Build.0 = Release|Any CPU
+		{1F1F7006-8A92-4C59-B1B5-EBE14A92FAA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F1F7006-8A92-4C59-B1B5-EBE14A92FAA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F1F7006-8A92-4C59-B1B5-EBE14A92FAA7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1F1F7006-8A92-4C59-B1B5-EBE14A92FAA7}.Debug|x64.Build.0 = Debug|Any CPU
+		{1F1F7006-8A92-4C59-B1B5-EBE14A92FAA7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1F1F7006-8A92-4C59-B1B5-EBE14A92FAA7}.Debug|x86.Build.0 = Debug|Any CPU
+		{1F1F7006-8A92-4C59-B1B5-EBE14A92FAA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F1F7006-8A92-4C59-B1B5-EBE14A92FAA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F1F7006-8A92-4C59-B1B5-EBE14A92FAA7}.Release|x64.ActiveCfg = Release|Any CPU
+		{1F1F7006-8A92-4C59-B1B5-EBE14A92FAA7}.Release|x64.Build.0 = Release|Any CPU
+		{1F1F7006-8A92-4C59-B1B5-EBE14A92FAA7}.Release|x86.ActiveCfg = Release|Any CPU
+		{1F1F7006-8A92-4C59-B1B5-EBE14A92FAA7}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{6DCECF24-9F70-419C-A623-A4819FD966F8} = {170A7DBE-46CA-4CA8-83C5-46013DDAC1AD}
+		{1F1F7006-8A92-4C59-B1B5-EBE14A92FAA7} = {893C0FF6-526B-4994-BBA4-D541C0C11272}
 	EndGlobalSection
 EndGlobal
