@@ -1,0 +1,53 @@
+﻿@page
+@model SelectDateModel
+@{
+    ViewData["Title"] = "Home page";
+    var date = Model.Date;
+    var prevDate = Model.PrevDate;
+    var nextDate = Model.NextDate;
+}
+
+<div class="text-center">
+    <h1 class="display-4">ようこそ！</h1>
+    <p>ワクチン接種の予約を行います。時間を選択してください。</p>
+    <div>
+        <div>
+            <a asp-page="Index" asp-route-year="@date.Year" asp-route-month="@date.Month">月の選択</a>
+        </div>
+        <div>
+            @if (Model.Appointments!.PrevDateAvailable)
+            {
+                <a asp-route-year="@prevDate.Year" asp-route-month="@prevDate.Month" asp-route-day="@prevDate.Day">前の日</a>
+            }
+            else
+            {
+                <span>前の日</span>
+            }
+            @if (Model.Appointments!.NextDateAvailable)
+            {
+                <a asp-route-year="@nextDate.Year" asp-route-month="@nextDate.Month" asp-route-day="@nextDate.Day">次の日</a>
+            }
+            else
+            {
+                <span>次の日</span>
+            }
+        </div>
+        <h1>@date.Year 年 @date.Month 月 @date.Day 日</h1>
+        @if (Model.Appointments.AvailableSlots.Any())
+        {
+            <div class="list-group">
+                @foreach (var slot in Model.Appointments.AvailableSlots)
+                {
+                <a class="list-group-item" asp-page="Booking" asp-route-id="@slot.Id">
+                    <div>@slot.From.TimeOfDay - @slot.To.TimeOfDay</div>
+                </a>
+                }
+
+            </div>
+        }
+        else
+        {
+            <p>予約可能な時間がありません。</p>
+        }
+    </div>
+</div>

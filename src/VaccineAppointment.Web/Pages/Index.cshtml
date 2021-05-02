@@ -2,9 +2,98 @@
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
+    var month = Model.Month;
+    var prevMonth = Model.PrevMonth;
+    var nextMonth = Model.NextMonth;
+
+    var startDayOfWeek = NodaTime.IsoDayOfWeek.Monday;
+    var firstDayOfCalendar = month.OnDayOfMonth(1).DayOfWeek == startDayOfWeek ? month.OnDayOfMonth(1) : month.OnDayOfMonth(1).Previous(startDayOfWeek);
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">ようこそ！</h1>
+    <p>ワクチン接種の予約を行います。日付を選択してください。</p>
+    <div>
+        @if (Model.Appointments!.PrevMonthAvailable)
+        {
+            <a asp-route-year="@prevMonth.Year" asp-route-month="@prevMonth.Month">前の月</a>
+        }
+        else
+        {
+            <span>前の月</span>
+        }
+        @if (Model.Appointments!.NextMonthAvailable)
+        {
+            <a asp-route-year="@nextMonth.Year" asp-route-month="@nextMonth.Month">次の月</a>
+        }
+        else
+        {
+            <span>次の月</span>
+        }
+        <h1>@month.Year 年 @month.Month 月</h1>
+        <table style="table-layout: fixed" class="table table-bordered w-100">
+            <colgroup>
+                <col />
+                <col />
+                <col />
+                <col />
+                <col />
+                <col />
+                <col />
+            </colgroup>
+            <thead>
+                <tr>
+                    @for (var i = 0; i < 7; i++)
+                    {
+                        switch (((int)startDayOfWeek + i) % 7)
+                        {
+                            case 0:
+                                <th>日</th>
+                                break;
+                            case 1:
+                                <th>月</th>
+                                break;
+                            case 2:
+                                <th>火</th>
+                                break;
+                            case 3:
+                                <th>水</th>
+                                break;
+                            case 4:
+                                <th>木</th>
+                                break;
+                            case 5:
+                                <th>金</th>
+                                break;
+                            case 6:
+                                <th>土</th>
+                                break;
+                        }
+
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @for (var line = 0; line < 6; line++)
+                {
+                    <tr>
+                        @for (var dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++)
+                        {
+                            var date = firstDayOfCalendar.PlusDays(line * 7 + dayOfWeek);
+                            <td>
+                                @if (date.ToYearMonth() == month)
+                                {
+                                    <a asp-page="SelectDate" asp-route-year="@date.Year" asp-route-month="@date.Month" asp-route-day="@date.Day">@date.Day</a>
+                                }
+                                else
+                                {
+                                    <text>@date.Day</text>
+                                }
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>

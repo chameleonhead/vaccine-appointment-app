@@ -1,0 +1,44 @@
+﻿@page
+@model BookingModel
+@{
+    ViewData["Title"] = "Home page";
+    var date = Model.AppointmentSlot!.From;
+    var from = Model.AppointmentSlot!.From;
+    var to = Model.AppointmentSlot!.To;
+}
+
+<div class="text-center">
+    <h1 class="display-4">ようこそ！</h1>
+    <p>ワクチン接種の予約を行います。情報を入力してください。</p>
+    <div>
+        <div>
+            <a asp-page="Index" asp-route-year="@date.Year" asp-route-month="@date.Month">月の選択</a>
+        </div>
+        <div>
+            <a asp-page="SelectDate" asp-route-year="@date.Year" asp-route-month="@date.Month" asp-route-day="@date.Day">日の選択</a>
+        </div>
+        <h1>@date.Year 年 @date.Month 月 @date.Day 日</h1>
+        <h2>@from.TimeOfDay - @to.TimeOfDay</h2>
+        <form method="post" class="text-left">
+            <div class="form-group">
+                <label>名前</label>
+                <input type="text" class="form-control" asp-for="Name" />
+            </div>
+            <div class="form-group">
+                <label>メールアドレス</label>
+                <input type="text" class="form-control" asp-for="Email" />
+            </div>
+            <div class="form-group">
+                <label>性別</label>
+                <input type="text" class="form-control" asp-for="Sex" />
+            </div>
+            <div class="form-group">
+                <label>年齢</label>
+                <input type="number" class="form-control" asp-for="Age" />
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary">登録</button>
+            </div>
+        </form>
+    </div>
+</div>
