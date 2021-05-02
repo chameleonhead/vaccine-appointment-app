@@ -1,0 +1,143 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "resourcePrefix": {
+            "type": "string",
+            "metadata": {
+                "description": "Prefix of creating resource (i.e. vaapp-database)"
+            }
+        },
+        "webSiteName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of website"
+            }
+        },
+        "dbAdminName": {
+            "type": "string",
+            "metadata": {
+                "description": "Login of Azure SQL Database"
+            }
+        },
+        "dbAdminPassword": {
+            "type": "string",
+            "metadata": {
+                "description": "Login password of Azure SQL Database"
+            }
+        }
+    },
+    "variables": {
+        "dbserver-name": "[concat(parameters('resourcePrefix'), '-database')]",
+        "webserver-name": "[concat(parameters('resourcePrefix'), '-webserver')]",
+        "database-name": "VaccineAppointmentDatabase"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Sql/servers",
+            "name": "[variables('dbserver-name')]",
+            "apiVersion": "2014-04-01",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "displayName": "[variables('dbserver-name')]"
+            },
+            "properties": {
+                "administratorLogin": "[parameters('dbAdminName')]",
+                "administratorLoginPassword": "[parameters('dbAdminPassword')]"
+            },
+            "resources": [
+                {
+                    "type": "firewallRules",
+                    "apiVersion": "2014-04-01",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Sql/servers', variables('dbserver-name'))]"
+                    ],
+                    "location": "[resourceGroup().location]",
+                    "name": "AllowAllWindowsAzureIps",
+                    "properties": {
+                        "startIpAddress": "0.0.0.0",
+                        "endIpAddress": "0.0.0.0"
+                    }
+                }
+            ]
+        },
+        {
+            "type": "Microsoft.Sql/servers/databases",
+            "name": "[concat(variables('dbserver-name'), '/', variables('database-name'))]",
+            "apiVersion": "2014-04-01",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "displayName": "[variables('database-name')]"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Sql/servers', variables('dbserver-name'))]"
+            ],
+            "properties": {
+                "collation": "SQL_Latin1_General_CP1_CI_AS",
+                "edition": "Basic",
+                "maxSizeBytes": "1073741824",
+                "requestedServiceObjectiveName": "Basic"
+            }
+        },
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "name": "[variables('webserver-name')]",
+            "apiVersion": "2018-02-01",
+            "location": "[resourceGroup().location]",
+            "kind": "linux",
+            "sku": {
+                "name": "F1",
+                "capacity": 1
+            },
+            "tags": {
+                "displayName": "[variables('webserver-name')]"
+            },
+            "properties": {
+                "name": "[variables('webserver-name')]"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites",
+            "name": "[parameters('websiteName')]",
+            "apiVersion": "2018-11-01",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "[concat('hidden-related:', resourceGroup().id, concat('/providers/Microsoft.Web/serverfarms/',variables('webserver-name')))]": "Resource",
+                "displayName": "[parameters('websiteName')]"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', variables('webserver-name'))]",
+                "[resourceId('Microsoft.Sql/servers', variables('dbserver-name'))]"
+            ],
+            "properties": {
+                "name": "[parameters('websiteName')]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('webserver-name'))]",
+                "siteConfig": {
+                    "appSettings": [
+                        {
+                            "name": "ConnectionStrings:SqlServerConnection",
+                            "value": "[concat('Server=tcp:',reference(variables('dbserver-name')).fullyQualifiedDomainName,',1433;Initial Catalog=',variables('database-name'),';Persist Security Info=False;User ID=',parameters('dbAdminName'),';Password=',parameters('dbAdminPassword'),';MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;')]"
+                        }
+                    ]
+                }
+            },
+            "resources": [
+                {
+                    "type": "sourcecontrols",
+                    "apiVersion": "2018-11-01",
+                    "name": "web",
+                    "location": "[resourceGroup().location]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/sites', parameters('websiteName'))]"
+                    ],
+                    "properties": {
+                        "repoUrl": "https://github.com/chameleonhead/vaccine-appointment-app.git",
+                        "branch": "main",
+                        "isManualIntegration": true
+                    }
+                }
+            ]
+        }
+    ],
+    "outputs": {}
+}
