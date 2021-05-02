@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Collapse, Container, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import { Link } from 'gatsby';
 import './NavMenu.css';
 
-export class NavMenu extends Component {
+export default class NavMenu extends Component<{}, {collapsed: boolean}> {
   static displayName = NavMenu.name;
 
   constructor (props) {

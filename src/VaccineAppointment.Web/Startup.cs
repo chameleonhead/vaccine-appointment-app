@@ -22,11 +22,9 @@ namespace VaccineAppointment.Web
         {
 
             services.AddControllersWithViews();
-
-            // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "ClientApp/build";
+                configuration.RootPath = "../frontend/public";
             });
         }
 
@@ -56,14 +54,7 @@ namespace VaccineAppointment.Web
                     pattern: "{controller}/{action=Index}/{id?}");
             });
 
-            app.UseSpa(spa =>
-            {
-                if (env.IsDevelopment())
-                {
-                    spa.Options.SourcePath = "..\\frontend";
-                    spa.UseReactDevelopmentServer(npmScript: "start");
-                }
-            });
+            app.UseSpa(spa => { });
         }
     }
 }
