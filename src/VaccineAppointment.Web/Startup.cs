@@ -40,7 +40,6 @@ namespace VaccineAppointment.Web
             else
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
@@ -59,10 +58,9 @@ namespace VaccineAppointment.Web
 
             app.UseSpa(spa =>
             {
-                spa.Options.SourcePath = "ClientApp";
-
                 if (env.IsDevelopment())
                 {
+                    spa.Options.SourcePath = "..\\frontend";
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
