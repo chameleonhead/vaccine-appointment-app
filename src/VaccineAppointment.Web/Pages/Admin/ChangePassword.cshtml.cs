@@ -1,10 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 using VaccineAppointment.Web.Authentication;
 using VaccineAppointment.Web.Services.Users;
 
@@ -16,10 +14,6 @@ namespace VaccineAppointment.Web.Pages.Admin
         private readonly PasswordHasher _passwordHasher;
 
         public string? Username { get; set; }
-
-        [BindProperty]
-        [Required]
-        public string? Password { get; set; }
 
         [BindProperty]
         [Required]
@@ -59,13 +53,12 @@ namespace VaccineAppointment.Web.Pages.Admin
             }
 
             var user = await _service.FindByUsernameAsync(Username!);
-            if (user == null || user.Password != _passwordHasher.Hash(Password!))
+            if (user == null)
             {
-                ErrorMessage = "現在のパスワードが一致しません。";
-                return Page();
+                throw new InvalidOperationException("User not found.");
             }
 
-            var result = await _service.ChangePasswordAsync(Username, NewPassword!);
+            var result = await _service.ChangePasswordAsync(Username, _passwordHasher.Hash(NewPassword!));
             if (!result.Succeeded)
             {
                 ErrorMessage = result.ErrorMessage;
