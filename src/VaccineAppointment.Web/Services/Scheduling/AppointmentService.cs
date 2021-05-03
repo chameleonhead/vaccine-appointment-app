@@ -42,7 +42,7 @@ namespace VaccineAppointment.Web.Services.Scheduling
             return Task.FromResult(response);
         }
 
-        public Task<AppointmentSlot?> FindAppointmentByIdAsync(string appointmentId)
+        public Task<AppointmentSlot?> FindAppointmentSlotByIdAsync(string appointmentId)
         {
             var instant = InstantPattern.ExtendedIso.Parse(appointmentId);
             var response = new AppointmentSlot()
@@ -55,16 +55,16 @@ namespace VaccineAppointment.Web.Services.Scheduling
             return Task.FromResult((AppointmentSlot?)response);
         }
 
-        public async Task<Appointment?> FindBookByIdAsync(string bookingId)
+        public async Task<Appointment?> FindAppointmentByIdAsync(string appointmentId)
         {
-            var slot = await FindAppointmentByIdAsync(bookingId);
+            var slot = await FindAppointmentSlotByIdAsync(appointmentId);
             if (slot is null)
             {
                 return null;
             }
             var response = new Appointment()
             {
-                Id = bookingId,
+                Id = appointmentId,
                 Slot = slot,
             };
             return response;

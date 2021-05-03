@@ -13,7 +13,7 @@ namespace VaccineAppointment.Web.Pages
         private readonly AppointmentService _service;
         private readonly ILogger<IndexModel> _logger;
 
-        public Appointment? Booking { get; set; }
+        public Appointment? Appointment { get; set; }
 
 
         public ThankYouModel(ILogger<IndexModel> logger, AppointmentService service)
@@ -24,7 +24,7 @@ namespace VaccineAppointment.Web.Pages
 
         public async Task OnGet([FromQuery] string id)
         {
-            Booking = await _service.FindBookByIdAsync(id);
+            Appointment = await _service.FindAppointmentByIdAsync(id);
         }
     }
 }

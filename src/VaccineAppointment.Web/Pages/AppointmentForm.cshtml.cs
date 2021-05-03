@@ -32,13 +32,13 @@ namespace VaccineAppointment.Web.Pages
 
         public async Task OnGet([FromQuery] string id)
         {
-            AppointmentSlot = await _service.FindAppointmentByIdAsync(id);
+            AppointmentSlot = await _service.FindAppointmentSlotByIdAsync(id);
         }
 
         public async Task<IActionResult> OnPost([FromQuery] string id)
         {
             var result = await _service.MakeAppointmentAsync(id, Name!, Email!, Sex!, Age!.Value);
-            return RedirectToPage("ThankYou", new { Id = result.BookingId });
+            return RedirectToPage("ThankYou", new { Id = result.AppointmentId });
         }
     }
 }

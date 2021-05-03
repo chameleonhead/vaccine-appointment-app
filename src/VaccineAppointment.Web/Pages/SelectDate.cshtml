@@ -38,7 +38,7 @@
             <div class="list-group">
                 @foreach (var slot in Model.Appointments.AvailableSlots)
                 {
-                <a class="list-group-item" asp-page="Booking" asp-route-id="@slot.Id">
+                <a class="list-group-item" asp-page="AppointmentForm" asp-route-id="@slot.Id">
                     <div>@slot.From.TimeOfDay - @slot.To.TimeOfDay</div>
                 </a>
                 }

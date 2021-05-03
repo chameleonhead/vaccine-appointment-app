@@ -2,13 +2,13 @@
 @model ThankYouModel
 @{
     ViewData["Title"] = "Home page";
-    var date = Model.Booking!.Slot!.From;
-    var from = Model.Booking!.Slot!.From;
-    var to = Model.Booking!.Slot!.To;
-    var name = Model.Booking!.Name!;
-    var email = Model.Booking!.Email!;
-    var sex = Model.Booking!.Sex!;
-    var age = Model.Booking!.Age;
+    var date = Model.Appointment!.Slot!.From;
+    var from = Model.Appointment!.Slot!.From;
+    var to = Model.Appointment!.Slot!.To;
+    var name = Model.Appointment!.Name!;
+    var email = Model.Appointment!.Email!;
+    var sex = Model.Appointment!.Sex!;
+    var age = Model.Appointment!.Age;
 }
 
 <div class="text-center">
@@ -22,25 +22,25 @@
             <div class="list-group-item">
                 <div class="col d-md-flex">
                     <div class="col-md-3 font-weight-bold text-md-right">名前</div>
-                    <div class="col-md-9">@name aaa</div>
+                    <div class="col-md-9">@name</div>
                 </div>
             </div>
             <div class="list-group-item">
                 <div class="col d-md-flex">
                     <div class="col-md-3 font-weight-bold text-md-right">メールアドレス</div>
-                    <div class="col-md-9">@email aa</div>
+                    <div class="col-md-9">@email</div>
                 </div>
             </div>
             <div class="list-group-item">
                 <div class="col d-md-flex">
                     <div class="col-md-3 font-weight-bold text-md-right">性別</div>
-                    <div class="col-md-9">@sex aa</div>
+                    <div class="col-md-9">@sex</div>
                 </div>
             </div>
             <div class="list-group-item">
                 <div class="col d-md-flex">
                     <div class="col-md-3 font-weight-bold text-md-right">年齢</div>
-                    <div class="col-md-9">@age 1</div>
+                    <div class="col-md-9">@age</div>
                 </div>
             </div>
         </div>
