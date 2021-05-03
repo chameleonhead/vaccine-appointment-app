@@ -13,7 +13,7 @@ namespace VaccineAppointment.Web.Pages
         private readonly AppointmentService _service;
         private readonly ILogger<IndexModel> _logger;
 
-        public Booking? Booking { get; set; }
+        public Appointment? Booking { get; set; }
 
 
         public ThankYouModel(ILogger<IndexModel> logger, AppointmentService service)

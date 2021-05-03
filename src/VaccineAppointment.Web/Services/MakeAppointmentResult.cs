@@ -1,22 +1,22 @@
 ﻿namespace VaccineAppointment.Web.Services
 {
-    public class BookingResult
+    public class MakeAppointmentResult
     {
         public bool Success { get; }
 
         public string? BookingId { get; }
         public string? ErrorMessage { get; }
 
-        public BookingResult(string bookingId, string? errorMessage = null)
+        public MakeAppointmentResult(string bookingId, string? errorMessage = null)
         {
             Success = !string.IsNullOrEmpty(bookingId);
             BookingId = bookingId;
             ErrorMessage = errorMessage; 
         }
 
-        public static BookingResult Ok(string bookingId)
+        public static MakeAppointmentResult Ok(string bookingId)
         {
-            return new BookingResult(bookingId);
+            return new MakeAppointmentResult(bookingId);
         }
     }
 }

@@ -37,7 +37,7 @@ namespace VaccineAppointment.Web.Pages
 
         public async Task<IActionResult> OnPost([FromQuery] string id)
         {
-            var result = await _service.BookAsync(id, Name!, Email!, Sex!, Age!.Value);
+            var result = await _service.MakeAppointmentAsync(id, Name!, Email!, Sex!, Age!.Value);
             return RedirectToPage("ThankYou", new { Id = result.BookingId });
         }
     }

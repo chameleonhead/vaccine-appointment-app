@@ -1,6 +1,6 @@
 ﻿namespace VaccineAppointment.Web.Models.Scheduling
 {
-    public class Booking
+    public class Appointment
     {
         public string? Id { get; set; }
         public AppointmentSlot? Slot { get; set; }

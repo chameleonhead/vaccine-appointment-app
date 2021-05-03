@@ -55,19 +55,19 @@ namespace VaccineAppointment.Web.Services
             return Task.FromResult((AppointmentSlot?)response);
         }
 
-        public async Task<Booking?> FindBookByIdAsync(string bookingId)
+        public async Task<Appointment?> FindBookByIdAsync(string bookingId)
         {
-            var response = new Booking()
+            var response = new Appointment()
             {
                 Id = bookingId,
                 Slot = await FindAppointmentByIdAsync(bookingId),
             };
-            return (Booking?)response;
+            return (Appointment?)response;
         }
 
-        public Task<BookingResult> BookAsync(string id, string name, string email, string sex, int age)
+        public Task<MakeAppointmentResult> MakeAppointmentAsync(string id, string name, string email, string sex, int age)
         {
-            return Task.FromResult(BookingResult.Ok(id));
+            return Task.FromResult(MakeAppointmentResult.Ok(id));
         }
     }
 }
