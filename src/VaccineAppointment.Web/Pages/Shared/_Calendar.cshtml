@@ -1,0 +1,81 @@
+﻿@model CalendarViewModel
+@{
+    var month = Model.Month;
+    var startDayOfWeek = NodaTime.IsoDayOfWeek.Monday;
+    var firstDayOfCalendar = month.OnDayOfMonth(1).DayOfWeek == startDayOfWeek ? month.OnDayOfMonth(1) : month.OnDayOfMonth(1).Previous(startDayOfWeek);
+}
+
+<table style="table-layout: fixed" class="table table-bordered w-100">
+    <colgroup>
+        <col />
+        <col />
+        <col />
+        <col />
+        <col />
+        <col />
+        <col />
+    </colgroup>
+    <thead>
+        <tr>
+            @for (var i = 0; i < 7; i++)
+            {
+                <th class="text-center">
+                    @switch (((int)startDayOfWeek + i) % 7)
+                    {
+                        case 0:
+                            <text>日</text>
+                            break;
+                        case 1:
+                            <text>月</text>
+                            break;
+                        case 2:
+                            <text>火</text>
+                            break;
+                        case 3:
+                            <text>水</text>
+                            break;
+                        case 4:
+                            <text>木</text>
+                            break;
+                        case 5:
+                            <text>金</text>
+                            break;
+                        case 6:
+                            <text>土</text>
+                            break;
+                    }
+
+                </th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @for (var line = 0; line < 6; line++)
+        {
+            <tr>
+                @for (var dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++)
+                {
+                    var date = firstDayOfCalendar.PlusDays(line * 7 + dayOfWeek);
+                    @if (date == Model.SelectedDate)
+                    {
+                        <td class="text-right bg-light">
+                            <a asp-page="@Model.LinkPage" asp-route-year="@date.Year" asp-route-month="@date.Month" asp-route-day="@date.Day">@date.Day</a>
+                        </td>
+                    }
+                    else if (date.ToYearMonth() == month)
+                    {
+                        <td class="text-right">
+                            <a asp-page="@Model.LinkPage" asp-route-year="@date.Year" asp-route-month="@date.Month" asp-route-day="@date.Day">@date.Day</a>
+                        </td>
+                    }
+                    else
+                    {
+                        <td class="text-right text-muted">
+                            @date.Day
+                        </td>
+                    }
+                }
+            </tr>
+        }
+    </tbody>
+</table>

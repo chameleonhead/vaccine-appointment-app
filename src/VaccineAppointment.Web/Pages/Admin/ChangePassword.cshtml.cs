@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
@@ -8,6 +9,7 @@ using VaccineAppointment.Web.Services.Users;
 
 namespace VaccineAppointment.Web.Pages.Admin
 {
+    [Authorize]
     public class ChangePasswordModel : PageModel
     {
         private readonly UserService _service;

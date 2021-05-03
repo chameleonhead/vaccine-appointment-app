@@ -1,5 +1,6 @@
 ﻿using NodaTime;
 using System;
+using System.Collections.Generic;
 
 namespace VaccineAppointment.Web.Models.Scheduling
 {
@@ -16,5 +17,7 @@ namespace VaccineAppointment.Web.Models.Scheduling
         public Period Duration { get; set; }
         public LocalDateTime To => From.Plus(Duration);
         public int CountOfSlot { get; set; }
+
+        public List<Appointment> Appointments { get; } = new List<Appointment>();
     }
 }
