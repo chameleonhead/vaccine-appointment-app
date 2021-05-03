@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using VaccineAppointment.Web.Authentication;
 using VaccineAppointment.Web.Services.Users;
 
-namespace VaccineAppointment.Web.Pages.Admin
+namespace VaccineAppointment.Web.Pages
 {
     public class LoginModel : PageModel
     {

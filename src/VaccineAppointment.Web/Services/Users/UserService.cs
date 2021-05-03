@@ -27,5 +27,10 @@ namespace VaccineAppointment.Web.Services.Users
             }
             return Task.FromResult((User?)null);
         }
+
+        public Task<OperationResult> ChangePasswordAsync(string username, string newPassword)
+        {
+            return Task.FromResult(OperationResult.Ok());
+        }
     }
 }
