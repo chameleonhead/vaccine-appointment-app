@@ -5,7 +5,7 @@ using NodaTime;
 using NodaTime.TimeZones;
 using System;
 using System.Threading.Tasks;
-using VaccineAppointment.Web.Services;
+using VaccineAppointment.Web.Services.Scheduling;
 
 namespace VaccineAppointment.Web.Pages
 {

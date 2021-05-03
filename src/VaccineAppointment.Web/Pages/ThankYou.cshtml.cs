@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using VaccineAppointment.Web.Models.Scheduling;
-using VaccineAppointment.Web.Services;
+using VaccineAppointment.Web.Services.Scheduling;
 
 namespace VaccineAppointment.Web.Pages
 {

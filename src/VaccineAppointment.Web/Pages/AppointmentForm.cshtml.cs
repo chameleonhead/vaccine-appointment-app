@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using VaccineAppointment.Web.Models.Scheduling;
-using VaccineAppointment.Web.Services;
+using VaccineAppointment.Web.Services.Scheduling;
 
 namespace VaccineAppointment.Web.Pages
 {
 
-    public class BookingModel : PageModel
+    public class AppointmentFormModel : PageModel
     {
         private readonly AppointmentService _service;
         private readonly ILogger<IndexModel> _logger;
@@ -24,7 +24,7 @@ namespace VaccineAppointment.Web.Pages
         [BindProperty]
         public int? Age { get; set; }
 
-        public BookingModel(ILogger<IndexModel> logger, AppointmentService service)
+        public AppointmentFormModel(ILogger<IndexModel> logger, AppointmentService service)
         {
             _service = service;
             _logger = logger;

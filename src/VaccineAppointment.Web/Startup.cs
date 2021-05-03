@@ -1,9 +1,12 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using VaccineAppointment.Web.Services;
+using VaccineAppointment.Web.Authentication;
+using VaccineAppointment.Web.Services.Scheduling;
+using VaccineAppointment.Web.Services.Users;
 
 namespace VaccineAppointment.Web
 {
@@ -21,7 +24,15 @@ namespace VaccineAppointment.Web
         {
             services.AddRazorPages()
                 .AddRazorRuntimeCompilation();
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Login";
+                    options.LogoutPath = "/Logout";
+                });
+            services.AddSingleton(new PasswordHasher(Configuration.GetValue<string>("VaccineAppointment.Web:PasswordSalt")));
             services.AddTransient<AppointmentService>();
+            services.AddTransient<UserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,6 +54,7 @@ namespace VaccineAppointment.Web
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

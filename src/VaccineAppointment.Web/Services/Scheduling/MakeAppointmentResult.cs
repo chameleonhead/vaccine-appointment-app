@@ -1,4 +1,4 @@
-﻿namespace VaccineAppointment.Web.Services
+﻿namespace VaccineAppointment.Web.Services.Scheduling
 {
     public class MakeAppointmentResult
     {

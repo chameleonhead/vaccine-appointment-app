@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using VaccineAppointment.Web.Models.Scheduling;
 
-namespace VaccineAppointment.Web.Services
+namespace VaccineAppointment.Web.Services.Scheduling
 {
     public class AppointmentService
     {
@@ -57,12 +57,17 @@ namespace VaccineAppointment.Web.Services
 
         public async Task<Appointment?> FindBookByIdAsync(string bookingId)
         {
+            var slot = await FindAppointmentByIdAsync(bookingId);
+            if (slot is null)
+            {
+                return null;
+            }
             var response = new Appointment()
             {
                 Id = bookingId,
-                Slot = await FindAppointmentByIdAsync(bookingId),
+                Slot = slot,
             };
-            return (Appointment?)response;
+            return response;
         }
 
         public Task<MakeAppointmentResult> MakeAppointmentAsync(string id, string name, string email, string sex, int age)

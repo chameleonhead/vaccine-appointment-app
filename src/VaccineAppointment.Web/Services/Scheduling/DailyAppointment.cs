@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using VaccineAppointment.Web.Models.Scheduling;
 
-namespace VaccineAppointment.Web.Services
+namespace VaccineAppointment.Web.Services.Scheduling
 {
     public class DailyAppointment
     {
