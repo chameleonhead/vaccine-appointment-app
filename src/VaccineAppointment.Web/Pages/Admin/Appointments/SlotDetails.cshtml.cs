@@ -12,7 +12,7 @@ using VaccineAppointment.Web.Services.Scheduling;
 namespace VaccineAppointment.Web.Pages.Admin.Appointments
 {
     [Authorize]
-    public class EditModel : PageModel
+    public class SlotDetailsModel : PageModel
     {
         private readonly AppointmentService _service;
         private readonly ILogger<IndexModel> _logger;
@@ -25,7 +25,7 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
 
         public AppointmentSlot? Slot { get; set; }
 
-        public EditModel(ILogger<IndexModel> logger, AppointmentService service)
+        public SlotDetailsModel(ILogger<IndexModel> logger, AppointmentService service)
         {
             _service = service;
             _logger = logger;

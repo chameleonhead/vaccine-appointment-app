@@ -74,5 +74,10 @@ namespace VaccineAppointment.Web.Services.Scheduling
         {
             return Task.FromResult(MakeAppointmentResult.Ok(id));
         }
+
+        public Task<OperationResult> CreateAppointmentSlotAsync(LocalTime startTime, LocalTime endTime, int countOfSlot)
+        {
+            return Task.FromResult(OperationResult.Ok());
+        }
     }
 }
