@@ -2,13 +2,7 @@
 @model VaccineAppointment.Web.Pages.Admin.Appointments.SlotDetailsModel
 @{
     ViewData["Title"] = "予約管理";
-    var month = Model.Month;
-    var prevMonth = Model.PrevMonth;
-    var nextMonth = Model.NextMonth;
-
     var selectedDate = Model.SelectedDate;
-    var prevDate = selectedDate.PlusDays(-1);
-    var nextDate = selectedDate.PlusDays(1);
 
     var slot = Model.Slot!;
 }
@@ -16,25 +10,11 @@
 <h1>予約管理</h1>
 
 <div class="row">
+    <partial name="_Navigation" model="@(new NavigationViewModel(selectedDate, "Index") { BackPage = "Index", DayNavigationDisabled = true })" />
     <div class="col-lg-4">
-        <div>
-            <a class="btn btn-link pl-0" asp-page="Index" asp-route-year="@prevMonth.Year" asp-route-month="@prevMonth.Month" asp-route-day="@prevMonth.OnDayOfMonth(1).Day">前の月</a>
-            <a class="btn btn-link pl-0" asp-page="Index" asp-route-year="@nextMonth.Year" asp-route-month="@nextMonth.Month" asp-route-day="@nextMonth.OnDayOfMonth(1).Day">次の月</a>
-        </div>
-        <h2>@Model.Month.Year 年 @Model.Month.Month 月</h2>
         <partial name="_Calendar" model="@(new CalendarViewModel(selectedDate, "Index"))" />
     </div>
     <div class="col-lg-8">
-        <div class="d-flex justify-content-between">
-            <div>
-                <a class="btn btn-link pl-0 disabled" asp-page="Index" asp-route-year="@prevDate.Year" asp-route-month="@prevDate.Month" asp-route-day="@prevDate.Day">前の日</a>
-                <a class="btn btn-link pl-0 disabled" asp-page="Index" asp-route-year="@nextDate.Year" asp-route-month="@nextDate.Month" asp-route-day="@nextDate.Day">次の日</a>
-            </div>
-            <div>
-                <a class="btn btn-sm btn-outline-secondary" asp-page="Index" asp-route-year="@selectedDate.Year" asp-route-month="@selectedDate.Month" asp-route-day="@selectedDate.Day">戻る</a>
-            </div>
-        </div>
-        <h2>@Model.SelectedDate.Day 日 (@Model.SelectedDate.DayOfWeek)</h2>
         <div class="d-flex justify-content-between">
             <h3 class="mb-1">予約枠 @slot.From.TimeOfDay - @slot.To.TimeOfDay</h3>
             <div class="d-flex align-items-center">

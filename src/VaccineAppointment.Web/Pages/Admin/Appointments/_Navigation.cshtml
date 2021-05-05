@@ -18,7 +18,7 @@
     <h2>@month.Year 年 @month.Month 月</h2>
 </div>
 <div class="col-lg-8">
-    <div class="d-flex justify-content-between">
+    <div class="d-flex justify-content-between align-items-baseline">
         @if (Model.DayNavigationDisabled)
         {
             <div>
@@ -33,9 +33,32 @@
                 <a class="btn btn-link pl-0" asp-page="@Model.LinkPage" asp-route-year="@nextDate.Year" asp-route-month="@nextDate.Month" asp-route-day="@nextDate.Day">次の日</a>
             </div>
         }
-        <div>
-            <a class="btn btn-sm btn-outline-secondary" asp-page="SlotDetails" asp-route-year="@selectedDate.Year" asp-route-month="@selectedDate.Month" asp-route-day="@selectedDate.Day" asp-route-id="@slotId">戻る</a>
-        </div>
+        @if (!string.IsNullOrEmpty(Model.BackPage))
+        {
+            <div>
+                <a class="btn btn-sm btn-outline-secondary" asp-page="@Model.BackPage" asp-route-year="@selectedDate.Year" asp-route-month="@selectedDate.Month" asp-route-day="@selectedDate.Day" asp-route-id="@slotId">戻る</a>
+            </div>
+        }
     </div>
-    <h2>@Model.SelectedDate.Day 日 (@Model.SelectedDate.DayOfWeek)</h2>
+    <div class="d-flex justify-content-between align-items-baseline">
+        <h2>@Model.SelectedDate.Day 日 @NodaTime.Text.LocalDatePattern.Create("dddd", System.Globalization.CultureInfo.GetCultureInfo("ja-JP")).Format(Model.SelectedDate)</h2>
+        @if (Model.CommandLinks.Any())
+        {
+            <div class="row">
+                @foreach (var link in Model.CommandLinks)
+                {
+                    <div class="col-auto">
+                        @if (link.Disabled)
+                        {
+                            <button class="btn btn-link pl-0 disabled">@link.Title</button>
+                        }
+                        else
+                        {
+                            <a class="btn btn-sm btn-outline-@link.Color" href="@link.Href">@link.Title</a>
+                        }
+                    </div>
+                }
+            </div>
+        }
+    </div>
 </div>

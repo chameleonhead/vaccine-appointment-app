@@ -74,7 +74,20 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
                 return Page();
             }
             var result = await _service.CreateAppointmentAsync(id, Name!, Email!, Sex!, Age!.Value);
-            return RedirectToPage("ThankYou", new { SlotId = id, Id = result.AppointmentId });
+            if (!result.Succeeded)
+            {
+                ErrorMessage = result.ErrorMessage;
+                Today = TzdbDateTimeZoneSource.Default.ForId("Asia/Tokyo").AtStrictly(LocalDateTime.FromDateTime(DateTime.UtcNow)).Date;
+                if (!ModelState.IsValid)
+                {
+                    return RedirectToPage("Index");
+                }
+                SetMonth(new YearMonth(year, month));
+                SetSelectedDate(new LocalDate(year, month, day));
+                Slot = await _service.FindAppointmentSlotByIdAsync(id);
+                return Page();
+            }
+            return RedirectToPage("SlotDetails", new { year, month, day, id });
         }
 
         private void SetMonth(YearMonth month)
