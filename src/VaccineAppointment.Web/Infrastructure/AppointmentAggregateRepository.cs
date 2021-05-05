@@ -2,6 +2,7 @@
 using NodaTime;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using VaccineAppointment.Web.Models.Scheduling;
 
@@ -23,12 +24,16 @@ namespace VaccineAppointment.Web.Infrastructure
             {
                 return null;
             }
-            return new AppointmentAggregate(slot);
+            var endTime = slot.From + slot.Duration;
+            var appointments = await db.Appointments.Where(a => slot.From <= a.From && a.From <= endTime).ToListAsync();
+            return new AppointmentAggregate(slot, appointments);
         }
 
-        public Task<List<AppointmentAggregate>> SearchAsync(LocalDate from, LocalDate to)
+        public async Task<List<AppointmentAggregate>> SearchAsync(LocalDate from, LocalDate to)
         {
-            throw new NotImplementedException();
+            var slots = await db.Slots.Where(slot => from.AtMidnight() <= slot.From && slot.From < to.PlusDays(1).AtMidnight()).ToListAsync();
+            var appointments = await db.Appointments.Where(appointment => from.AtMidnight() <= appointment.From && appointment.From < to.PlusDays(1).AtMidnight()).ToListAsync();
+            return slots.Select(s => new AppointmentAggregate(s, appointments.Where(a => s.From <= a.From && a.From <= s.From + s.Duration))).ToList();
         }
 
         public Task AddAsync(AppointmentAggregate user)

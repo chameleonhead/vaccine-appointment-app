@@ -1,4 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using NodaTime;
+using System;
 using VaccineAppointment.Web.Models.Scheduling;
 using VaccineAppointment.Web.Models.Users;
 
@@ -17,5 +20,48 @@ namespace VaccineAppointment.Web.Infrastructure
         public DbSet<AppointmentSlot> Slots { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<AppointmentConfig> AppointmentConfig { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            var localDateConverter =
+                new ValueConverter<LocalDate, DateTime>(v =>
+                    v.ToDateTimeUnspecified(),
+                    v => LocalDate.FromDateTime(v));
+
+            var localDateTimeConverter =
+                new ValueConverter<LocalDateTime, DateTime>(v =>
+                    v.ToDateTimeUnspecified(),
+                    v => LocalDateTime.FromDateTime(v));
+
+            var periodConverter =
+                new ValueConverter<Period, TimeSpan>(v =>
+                    v.ToDuration().ToTimeSpan(),
+                    v => Period.FromTicks(v.Ticks));
+
+            modelBuilder.Entity<AppointmentSlot>()
+                .Property(e => e.From)
+                .HasConversion(localDateTimeConverter);
+            modelBuilder.Entity<AppointmentSlot>()
+                .Property(e => e.Duration)
+                .HasConversion(periodConverter);
+
+            modelBuilder.Entity<Appointment>()
+                .HasIndex(e => e.From);
+            modelBuilder.Entity<Appointment>()
+                .Property(e => e.From)
+                .HasConversion(localDateTimeConverter);
+            modelBuilder.Entity<Appointment>()
+                .Property(e => e.Duration)
+                .HasConversion(periodConverter);
+
+            modelBuilder.Entity<AppointmentConfig>()
+                .Property(e => e.AvailableIntervalStart)
+                .HasConversion(localDateConverter);
+            modelBuilder.Entity<AppointmentConfig>()
+                .Property(e => e.AvailableIntervalEnd)
+                .HasConversion(localDateConverter);
+        }
     }
 }

@@ -16,9 +16,10 @@ namespace VaccineAppointment.Web.Models.Scheduling
             };
         }
 
-        public AppointmentAggregate(AppointmentSlot slot)
+        public AppointmentAggregate(AppointmentSlot slot, IEnumerable<Appointment> appointments)
         {
             Slot = slot;
+            Appointments.AddRange(appointments);
         }
 
         public string Id => Slot.Id;
