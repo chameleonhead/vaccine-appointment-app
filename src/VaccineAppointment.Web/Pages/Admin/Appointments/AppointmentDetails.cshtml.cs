@@ -33,7 +33,7 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
             {
                 return RedirectToPage("Index", new { year, month, day });
             }
-            Appointment = await _service.FindAppointmentByIdAsync(id);
+            Appointment = Slot.FindAppointmentById(id);
             if (Appointment == null)
             {
                 return RedirectToPage("SlotDetails", new { year, month, day, id = slotId });

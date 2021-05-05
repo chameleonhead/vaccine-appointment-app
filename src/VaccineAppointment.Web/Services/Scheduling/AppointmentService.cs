@@ -25,8 +25,8 @@ namespace VaccineAppointment.Web.Services.Scheduling
             var config = await _configManager.GetConfigAsync();
 
             var response = new AppointmentsForMonth(yearMonth,
-                config == null ? false : config.AvailableIntervalStart.ToYearMonth() <= yearMonth,
-                config == null ? false : yearMonth <= config.AvailableIntervalEnd.ToYearMonth());
+                config == null ? false : config.AvailableIntervalStart.ToYearMonth() < yearMonth,
+                config == null ? false : yearMonth < config.AvailableIntervalEnd.ToYearMonth());
             foreach (var date in interval)
             {
                 response.Appointments.Add(new AppointmentsForDay(date,
@@ -52,18 +52,9 @@ namespace VaccineAppointment.Web.Services.Scheduling
             return await _repository.FindBySlotIdAsync(appointmentSlotId);
         }
 
-        public async Task<Appointment?> FindAppointmentByIdAsync(string appointmentId)
+        public async Task<AppointmentAggregate?> FindAppointmentByIdAsync(string appointmentId)
         {
-            await Task.Delay(0);
-            var instant = InstantPattern.ExtendedIso.Parse(appointmentId);
-            var from = instant.Value.WithOffset(TzdbDateTimeZoneSource.Default.ForId("Asia/Tokyo").GetUtcOffset(instant.Value)).LocalDateTime;
-            var response = new Appointment()
-            {
-                Id = appointmentId,
-                From = from,
-                Duration = Period.FromHours(1),
-            };
-            return response;
+            return await _repository.FindByAppointmentIdAsync(appointmentId);
         }
 
         public Task<OperationResult> CreateMultipleAppointmentSlotsAsync(LocalDateTime localDateTime, Period duration, int countOfSlot, int repeatCount)
@@ -71,9 +62,15 @@ namespace VaccineAppointment.Web.Services.Scheduling
             return Task.FromResult(OperationResult.Ok());
         }
 
-        public Task<OperationResult> CreateAppointmentSlotAsync(LocalDateTime startTime, Period duration, int countOfSlot)
+        public async Task<OperationResult> CreateAppointmentSlotAsync(LocalDateTime startTime, Period duration, int countOfSlot)
         {
-            return Task.FromResult(OperationResult.Ok());
+            var aggregates = await SearchAppointmentsByDateAsync(startTime.Date);
+            if (aggregates.AvailableSlots.Any(s => s.IsOverlap(startTime, duration)))
+            {
+                return OperationResult.Fail("予約枠が重複しています。");
+            }
+            await _repository.AddAsync(new AppointmentAggregate(startTime, duration, countOfSlot));
+            return OperationResult.Ok();
         }
 
         public Task<OperationResult> UpdateAppointmentSlotAsync(string id, LocalDateTime startTime, Period duration, int countOfSlot)

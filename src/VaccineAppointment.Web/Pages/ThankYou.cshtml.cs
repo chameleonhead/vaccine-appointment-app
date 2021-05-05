@@ -24,7 +24,8 @@ namespace VaccineAppointment.Web.Pages
 
         public async Task OnGet([FromQuery] string id)
         {
-            Appointment = await _service.FindAppointmentByIdAsync(id);
+            var slot = await _service.FindAppointmentByIdAsync(id);
+            Appointment = slot!.FindAppointmentById(id);
         }
     }
 }

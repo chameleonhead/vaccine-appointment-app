@@ -29,6 +29,16 @@ namespace VaccineAppointment.Web.Infrastructure
             return new AppointmentAggregate(slot, appointments);
         }
 
+        public async Task<AppointmentAggregate?> FindByAppointmentIdAsync(string id)
+        {
+            var appointment = await db.Appointments.FirstOrDefaultAsync(app => app.Id == id);
+            if (appointment == null)
+            {
+                return null;
+            }
+            return await FindBySlotIdAsync(appointment.AppointmentSlotId);
+        }
+
         public async Task<List<AppointmentAggregate>> SearchAsync(LocalDate from, LocalDate to)
         {
             var slots = await db.Slots.Where(slot => from.AtMidnight() <= slot.From && slot.From < to.PlusDays(1).AtMidnight()).ToListAsync();
@@ -36,12 +46,16 @@ namespace VaccineAppointment.Web.Infrastructure
             return slots.Select(s => new AppointmentAggregate(s, appointments.Where(a => s.From <= a.From && a.From <= s.From + s.Duration))).ToList();
         }
 
-        public Task AddAsync(AppointmentAggregate user)
+        public async Task AddAsync(AppointmentAggregate appointmentAggregate)
         {
-            throw new NotImplementedException();
+            using var trans = await db.Database.BeginTransactionAsync();
+            await db.Slots.AddAsync(appointmentAggregate.Slot);
+            await db.Appointments.AddRangeAsync(appointmentAggregate.Appointments);
+            await db.SaveChangesAsync();
+            await trans.CommitAsync();
         }
 
-        public Task UpdateAsync(AppointmentAggregate user)
+        public Task UpdateAsync(AppointmentAggregate appointmentAggregate)
         {
             throw new NotImplementedException();
         }

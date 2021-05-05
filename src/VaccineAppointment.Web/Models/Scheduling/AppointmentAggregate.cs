@@ -1,4 +1,5 @@
 ﻿using NodaTime;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -34,5 +35,15 @@ namespace VaccineAppointment.Web.Models.Scheduling
 
         public AppointmentSlot Slot { get; }
         public List<Appointment> Appointments { get; } = new List<Appointment>();
+
+        public Appointment? FindAppointmentById(string id)
+        {
+            return Appointments.FirstOrDefault(a => a.Id == id);
+        }
+
+        internal bool IsOverlap(LocalDateTime startTime, Period duration)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

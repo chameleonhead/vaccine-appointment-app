@@ -7,7 +7,8 @@ namespace VaccineAppointment.Web.Models.Scheduling
     {
         public Appointment()
         {
-            Id = Guid.NewGuid().ToString();
+            Id = Guid.Empty.ToString();
+            AppointmentSlotId = Id = Guid.Empty.ToString();
             Duration = Period.Zero;
             Name = "Unknown";
             Email = "mail@example.com";
@@ -16,6 +17,8 @@ namespace VaccineAppointment.Web.Models.Scheduling
         }
 
         public string Id { get; set; }
+        public string AppointmentSlotId { get; set; }
+
         public LocalDateTime From { get; set; }
         public Period Duration { get; set; }
         public LocalDateTime To => From.Plus(Duration);
