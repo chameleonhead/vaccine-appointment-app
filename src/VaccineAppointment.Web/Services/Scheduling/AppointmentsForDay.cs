@@ -12,12 +12,21 @@ namespace VaccineAppointment.Web.Services.Scheduling
             PrevDateAvailable = config == null || config.AvailableIntervalStart < date;
             NextDateAvailable = config == null || date < config.AvailableIntervalEnd;
             Date = date;
-            AvailableSlots = slots.OrderBy(a => a.From).ToList();
+            AllSlots = slots.OrderBy(a => a.From).ToList();
+            if (config == null || (config.AvailableIntervalStart <= date && date <= config.AvailableIntervalEnd))
+            {
+                AvailableSlots = AllSlots.Where(a => a.CanCreateAppointment).ToList();
+            }
+            else
+            {
+                AvailableSlots = new List<AppointmentAggregate>();
+            }
         }
 
         public LocalDate Date { get; }
         public bool PrevDateAvailable { get; set; }
         public bool NextDateAvailable { get; set; }
+        public List<AppointmentAggregate> AllSlots { get; }
         public List<AppointmentAggregate> AvailableSlots { get; }
     }
 }

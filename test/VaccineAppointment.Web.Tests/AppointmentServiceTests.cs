@@ -82,7 +82,7 @@ namespace VaccineAppointment.Web.Tests.Endpoints
             Assert.AreEqual(new LocalDate(2021, 5, 5), aggregatesForDay.Date);
             Assert.IsTrue(aggregatesForDay.PrevDateAvailable);
             Assert.IsTrue(aggregatesForDay.NextDateAvailable);
-            Assert.IsFalse(aggregatesForDay.AvailableSlots.Any());
+            Assert.IsFalse(aggregatesForDay.AllSlots.Any());
         }
 
         [TestMethod]
@@ -100,7 +100,7 @@ namespace VaccineAppointment.Web.Tests.Endpoints
             Assert.AreEqual(new LocalDate(2021, 5, 5), aggregatesForDay.Date);
             Assert.IsFalse(aggregatesForDay.PrevDateAvailable);
             Assert.IsFalse(aggregatesForDay.NextDateAvailable);
-            Assert.IsFalse(aggregatesForDay.AvailableSlots.Any());
+            Assert.IsFalse(aggregatesForDay.AllSlots.Any());
         }
 
         [TestMethod]
@@ -118,7 +118,7 @@ namespace VaccineAppointment.Web.Tests.Endpoints
             Assert.AreEqual(new LocalDate(2021, 5, 5), aggregatesForDay.Date);
             Assert.IsTrue(aggregatesForDay.PrevDateAvailable);
             Assert.IsFalse(aggregatesForDay.NextDateAvailable);
-            Assert.IsFalse(aggregatesForDay.AvailableSlots.Any());
+            Assert.IsFalse(aggregatesForDay.AllSlots.Any());
         }
 
         [TestMethod]
@@ -136,7 +136,7 @@ namespace VaccineAppointment.Web.Tests.Endpoints
             Assert.AreEqual(new LocalDate(2021, 5, 5), aggregatesForDay.Date);
             Assert.IsFalse(aggregatesForDay.PrevDateAvailable);
             Assert.IsTrue(aggregatesForDay.NextDateAvailable);
-            Assert.IsFalse(aggregatesForDay.AvailableSlots.Any());
+            Assert.IsFalse(aggregatesForDay.AllSlots.Any());
         }
 
         [TestMethod]
@@ -159,8 +159,8 @@ namespace VaccineAppointment.Web.Tests.Endpoints
             await db!.SaveChangesAsync();
 
             var aggregatesForDay = await sut!.SearchAppointmentsByDateAsync(new LocalDate(2021, 5, 5));
-            Assert.IsTrue(aggregatesForDay.AvailableSlots.Any());
-            Assert.IsFalse(aggregatesForDay.AvailableSlots.First().Appointments.Any());
+            Assert.IsTrue(aggregatesForDay.AllSlots.Any());
+            Assert.IsFalse(aggregatesForDay.AllSlots.First().Appointments.Any());
         }
 
         [TestMethod]
@@ -190,7 +190,7 @@ namespace VaccineAppointment.Web.Tests.Endpoints
             await db!.SaveChangesAsync();
 
             var aggregatesForDay = await sut!.SearchAppointmentsByDateAsync(new LocalDate(2021, 5, 5));
-            Assert.IsTrue(aggregatesForDay.AvailableSlots.First().Appointments.Any());
+            Assert.IsTrue(aggregatesForDay.AllSlots.First().Appointments.Any());
         }
 
         [TestMethod]
@@ -298,9 +298,9 @@ namespace VaccineAppointment.Web.Tests.Endpoints
             await db!.SaveChangesAsync();
 
             var aggregatesForMonth = await sut!.SearchAppointmentsByYearMonthAsync(new YearMonth(2021, 5));
-            Assert.IsTrue(aggregatesForMonth.Appointments.First(e => e.Date == new LocalDate(2021, 5, 1)).AvailableSlots.Any());
-            Assert.AreEqual(new LocalDateTime(2021, 5, 1, 10, 0), aggregatesForMonth.Appointments.First(e => e.Date == new LocalDate(2021, 5, 1)).AvailableSlots.First().From);
-            Assert.IsFalse(aggregatesForMonth.Appointments.First(e => e.Date == new LocalDate(2021, 5, 1)).AvailableSlots.First().Appointments.Any());
+            Assert.IsTrue(aggregatesForMonth.Appointments.First(e => e.Date == new LocalDate(2021, 5, 1)).AllSlots.Any());
+            Assert.AreEqual(new LocalDateTime(2021, 5, 1, 10, 0), aggregatesForMonth.Appointments.First(e => e.Date == new LocalDate(2021, 5, 1)).AllSlots.First().From);
+            Assert.IsFalse(aggregatesForMonth.Appointments.First(e => e.Date == new LocalDate(2021, 5, 1)).AllSlots.First().Appointments.Any());
         }
 
         [TestMethod]
@@ -326,9 +326,9 @@ namespace VaccineAppointment.Web.Tests.Endpoints
             await db!.SaveChangesAsync();
 
             var aggregatesForMonth = await sut!.SearchAppointmentsByYearMonthAsync(new YearMonth(2021, 5));
-            Assert.IsTrue(aggregatesForMonth.Appointments.First(e => e.Date == new LocalDate(2021, 5, 1)).AvailableSlots.Any());
-            Assert.AreEqual(new LocalDateTime(2021, 5, 1, 10, 0), aggregatesForMonth.Appointments.First(e => e.Date == new LocalDate(2021, 5, 1)).AvailableSlots.First().From);
-            Assert.IsTrue(aggregatesForMonth.Appointments.First(e => e.Date == new LocalDate(2021, 5, 1)).AvailableSlots.First().Appointments.Any());
+            Assert.IsTrue(aggregatesForMonth.Appointments.First(e => e.Date == new LocalDate(2021, 5, 1)).AllSlots.Any());
+            Assert.AreEqual(new LocalDateTime(2021, 5, 1, 10, 0), aggregatesForMonth.Appointments.First(e => e.Date == new LocalDate(2021, 5, 1)).AllSlots.First().From);
+            Assert.IsTrue(aggregatesForMonth.Appointments.First(e => e.Date == new LocalDate(2021, 5, 1)).AllSlots.First().Appointments.Any());
         }
 
         [TestMethod]

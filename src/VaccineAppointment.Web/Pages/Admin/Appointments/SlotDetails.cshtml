@@ -31,6 +31,18 @@
                     <div class="col-8">@slot.CountOfSlot</div>
                 </div>
             </div>
+            <div class="list-group-item">
+                <div class="row">
+                    <div class="col-4 text-right"><b>予約数</b></div>
+                    <div class="col-8">@slot.Appointments.Count</div>
+                </div>
+            </div>
+            <div class="list-group-item">
+                <div class="row">
+                    <div class="col-4 text-right"><b>残り受入可能件数</b></div>
+                    <div class="col-8">@slot.RemainingSlots</div>
+                </div>
+            </div>
         </div>
 
         <h5 class="font-weight-bold">予約状況</h5>

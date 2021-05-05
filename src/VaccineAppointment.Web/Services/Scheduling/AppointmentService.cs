@@ -136,21 +136,19 @@ namespace VaccineAppointment.Web.Services.Scheduling
             {
                 return OperationResult.Fail("予約枠が存在しません。");
             }
-            aggregate.AddAppointment(name, email, sex, age);
-            await _repository.UpdateAsync(aggregate);
-            return OperationResult.Ok();
-        }
-
-        public async Task<OperationResult> MakeAppointmentAsync(string id, string name, string email, string sex, int age)
-        {
-            var aggregate = await FindAppointmentSlotByIdAsync(id);
-            if (aggregate == null)
+            if (!aggregate.CanCreateAppointment)
             {
-                return OperationResult.Fail("予約枠が存在しません。");
+                return OperationResult.Fail("予約の上限に達しました。");
             }
             var appointmentId = aggregate.AddAppointment(name, email, sex, age);
             await _repository.UpdateAsync(aggregate);
             return MakeAppointmentResult.Ok(appointmentId);
+        }
+
+        public async Task<OperationResult> MakeAppointmentAsync(string id, string name, string email, string sex, int age)
+        {
+            var result = await CreateAppointmentAsync(id, name, email, sex, age);
+            return result;
         }
     }
 }

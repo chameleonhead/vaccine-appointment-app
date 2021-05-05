@@ -7,6 +7,12 @@
     var to = Model.AppointmentSlot!.To;
 }
 
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-danger">
+        @Model.ErrorMessage
+    </div>
+}
 <div class="text-center">
     <h1 class="display-4">ようこそ！</h1>
     <p>ワクチン接種の予約を行います。情報を入力してください。</p>

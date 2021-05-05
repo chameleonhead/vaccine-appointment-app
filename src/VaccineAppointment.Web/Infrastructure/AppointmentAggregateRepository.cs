@@ -25,7 +25,7 @@ namespace VaccineAppointment.Web.Infrastructure
                 return null;
             }
             var endTime = slot.From + slot.Duration;
-            var appointments = await db.Appointments.Where(a => slot.From <= a.From && a.From <= endTime).ToListAsync();
+            var appointments = await db.Appointments.Where(a => slot.From <= a.From && a.From < endTime).ToListAsync();
             return new AppointmentAggregate(slot, appointments);
         }
 
@@ -43,7 +43,7 @@ namespace VaccineAppointment.Web.Infrastructure
         {
             var slots = await db.Slots.Where(slot => from.AtMidnight() <= slot.From && slot.From < to.PlusDays(1).AtMidnight()).ToListAsync();
             var appointments = await db.Appointments.Where(appointment => from.AtMidnight() <= appointment.From && appointment.From < to.PlusDays(1).AtMidnight()).ToListAsync();
-            return slots.Select(s => new AppointmentAggregate(s, appointments.Where(a => s.From <= a.From && a.From <= s.From + s.Duration))).ToList();
+            return slots.Select(s => new AppointmentAggregate(s, appointments.Where(a => s.From <= a.From && a.From < s.From + s.Duration))).ToList();
         }
 
         public async Task AddAsync(AppointmentAggregate appointmentAggregate)
@@ -62,6 +62,8 @@ namespace VaccineAppointment.Web.Infrastructure
             await db.SaveChangesAsync();
 
             db.Appointments.RemoveRange(db.Appointments.Where(a => a.AppointmentSlotId == appointmentAggregate.Id));
+            await db.SaveChangesAsync();
+
             await db.Appointments.AddRangeAsync(appointmentAggregate.Appointments);
             await db.SaveChangesAsync();
             await trans.CommitAsync();

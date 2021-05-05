@@ -46,12 +46,14 @@ namespace VaccineAppointment.Web.Pages
             if (!ModelState.IsValid)
             {
                 ErrorMessage = "入力に誤りがあります。";
+                AppointmentSlot = await _service.FindAppointmentSlotByIdAsync(id);
                 return Page();
             }
             var result = await _service.MakeAppointmentAsync(id, Name!, Email!, Sex!, Age!.Value);
             if (!result.Succeeded)
             {
                 ErrorMessage = result.ErrorMessage;
+                AppointmentSlot = await _service.FindAppointmentSlotByIdAsync(id);
                 return Page();
             }
             var appointmentId = (result as MakeAppointmentResult)!.AppointmentId;

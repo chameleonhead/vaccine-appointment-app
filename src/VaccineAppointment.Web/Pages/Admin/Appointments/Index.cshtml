@@ -1,8 +1,10 @@
 ﻿@page
 @model IndexModel
-@{ ViewData["Title"] = "予約管理";
+@{
+    ViewData["Title"] = "予約管理";
     var selectedDate = Model.SelectedDate;
-    var slots = Model.Appointments!.AvailableSlots; }
+    var slots = Model.Appointments!.AllSlots;
+}
 
 <h1>予約管理</h1>
 
