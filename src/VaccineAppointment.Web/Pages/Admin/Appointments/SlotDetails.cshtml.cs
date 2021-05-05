@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using NodaTime;
 using System.Threading.Tasks;
+using VaccineAppointment.Web.Models.Scheduling;
 using VaccineAppointment.Web.Services.Scheduling;
 
 namespace VaccineAppointment.Web.Pages.Admin.Appointments
@@ -16,7 +17,7 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
 
         public LocalDate SelectedDate { get; set; }
 
-        public AppointmentsForSlot? Slot { get; set; }
+        public AppointmentAggregate? Slot { get; set; }
 
         public SlotDetailsModel(ILogger<IndexModel> logger, AppointmentService service)
         {

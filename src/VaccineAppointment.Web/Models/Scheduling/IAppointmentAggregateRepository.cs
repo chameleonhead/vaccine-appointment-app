@@ -4,10 +4,11 @@ using System.Threading.Tasks;
 
 namespace VaccineAppointment.Web.Models.Scheduling
 {
-    interface IAppointmentRepository
+    public interface IAppointmentAggregateRepository
     {
         Task<Appointment> FindByIdAsync(string id);
         Task<List<Appointment>> SearchAppointmentsFor(LocalDateTime from, LocalDateTime to);
-        Task SaveAsync(Appointment user);
+        Task AddAsync(Appointment user);
+        Task UpdateAsync(Appointment user);
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using VaccineAppointment.Web.Models.Scheduling;
 using VaccineAppointment.Web.Services.Scheduling;
 
 namespace VaccineAppointment.Web.Pages
@@ -13,7 +14,7 @@ namespace VaccineAppointment.Web.Pages
         private readonly AppointmentService _service;
         private readonly ILogger<IndexModel> _logger;
 
-        public AppointmentsForSlot? AppointmentSlot { get; set; }
+        public AppointmentAggregate? AppointmentSlot { get; set; }
         public string? ErrorMessage { get; set; }
 
         [BindProperty]

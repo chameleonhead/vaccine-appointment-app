@@ -22,7 +22,7 @@ namespace VaccineAppointment.Web.Services.Scheduling
 
         public async Task<AppointmentsForDay> SearchAppointmentsByDateAsync(LocalDate date)
         {
-            var response = new AppointmentsForDay(date, new LocalDate(2020, 1, 1) < date, date < new LocalDate(2021, 12, 31), new List<AppointmentsForSlot>());
+            var response = new AppointmentsForDay(date, new LocalDate(2020, 1, 1) < date, date < new LocalDate(2021, 12, 31), new List<AppointmentAggregate>());
             if (date.DayOfWeek != IsoDayOfWeek.Sunday)
             {
                 Func<LocalDateTime, string> patternFactory = dateTime => InstantPattern.ExtendedIso.Format(TzdbDateTimeZoneSource.Default.ForId("Asia/Tokyo").AtStrictly(dateTime).ToInstant());
@@ -32,17 +32,16 @@ namespace VaccineAppointment.Web.Services.Scheduling
             return response;
         }
 
-        public async Task<AppointmentsForSlot> FindAppointmentSlotByIdAsync(string appointmentSlotId)
+        public async Task<AppointmentAggregate> FindAppointmentSlotByIdAsync(string appointmentSlotId)
         {
             var instant = InstantPattern.ExtendedIso.Parse(appointmentSlotId);
-            var response = new AppointmentsForSlot();
-            response.Slot = new AppointmentSlot()
+            var response = new AppointmentAggregate(new AppointmentSlot()
             {
                 Id = appointmentSlotId,
                 From = instant.Value.WithOffset(TzdbDateTimeZoneSource.Default.ForId("Asia/Tokyo").GetUtcOffset(instant.Value)).LocalDateTime,
                 Duration = Period.FromHours(1),
                 CountOfSlot = 10,
-            };
+            });
             if (response.From.Hour == 10 && response.From.Minute == 0)
             {
                 response.Appointments.Add((await FindAppointmentByIdAsync(appointmentSlotId))!);

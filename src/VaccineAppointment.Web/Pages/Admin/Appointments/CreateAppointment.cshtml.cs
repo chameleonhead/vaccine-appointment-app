@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using NodaTime;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using VaccineAppointment.Web.Models.Scheduling;
 using VaccineAppointment.Web.Services.Scheduling;
 
 namespace VaccineAppointment.Web.Pages.Admin.Appointments
@@ -16,7 +17,7 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
         private readonly ILogger<IndexModel> _logger;
 
         public LocalDate SelectedDate { get; set; }
-        public AppointmentsForSlot? Slot { get; set; }
+        public AppointmentAggregate? Slot { get; set; }
         public string? ErrorMessage { get; private set; }
 
         [BindProperty]

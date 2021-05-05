@@ -7,6 +7,7 @@ using NodaTime.Text;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Threading.Tasks;
+using VaccineAppointment.Web.Models.Scheduling;
 using VaccineAppointment.Web.Services.Scheduling;
 
 namespace VaccineAppointment.Web.Pages.Admin.Appointments
@@ -19,7 +20,7 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
 
         public LocalDate SelectedDate { get; set; }
 
-        public AppointmentsForSlot? Slot { get; set; }
+        public AppointmentAggregate? Slot { get; set; }
         public string? ErrorMessage { get; private set; }
 
         [BindProperty]

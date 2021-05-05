@@ -16,7 +16,7 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
         private readonly ILogger<IndexModel> _logger;
         public LocalDate SelectedDate { get; set; }
 
-        public AppointmentsForSlot? Slot { get; set; }
+        public AppointmentAggregate? Slot { get; set; }
         public Appointment? Appointment { get; set; }
 
         public AppointmentDetailsModel(ILogger<IndexModel> logger, AppointmentService service)
