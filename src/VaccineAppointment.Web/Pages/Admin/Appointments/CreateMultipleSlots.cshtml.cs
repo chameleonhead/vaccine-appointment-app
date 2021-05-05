@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using NodaTime;
 using NodaTime.Text;
-using NodaTime.TimeZones;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
@@ -55,61 +53,19 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
             _logger = logger;
         }
 
-        public void OnGet([FromQuery] int year, [FromQuery] int month, [FromQuery] int day)
+        private IActionResult PageResult(int year, int month, int day)
         {
-            PrepareForShow(year, month, day);
+            SelectedDate = new LocalDate(year, month, day);
+            return Page();
         }
 
-        public async Task<IActionResult> OnPost([FromQuery] int year, [FromQuery] int month, [FromQuery] int day)
+        public IActionResult OnGet([FromQuery] int year, [FromQuery] int month, [FromQuery] int day)
         {
             if (!ModelState.IsValid)
             {
-                ErrorMessage = "入力に誤りがあります。";
-                PrepareForShow(year, month, day);
-                return Page();
+                return RedirectToPage("Index", new { year, month, day });
             }
-            if (!SelectedDates.Any())
-            {
-                ErrorMessage = "対象の日を1日以上は設定してください。";
-                PrepareForShow(year, month, day);
-                return Page();
-            }
-            var startTime = LocalTimePattern.Create("HH:mm", CultureInfo.CurrentCulture).Parse(StartTime!);
-            if (!startTime.Success)
-            {
-                ErrorMessage = "入力に誤りがあります。";
-                PrepareForShow(year, month, day);
-                return Page();
-            }
-            var date = new LocalDate(year, month, day);
-            var result = await _service.CreateMultipleAppointmentSlotsAsync(date.At(startTime.Value), Period.FromMinutes(DurationMinutesForEachSlot!.Value), CountOfSlotForEachSlot!.Value, CountOfSlotsToCreate!.Value);
-            if (!result.Succeeded)
-            {
-                ErrorMessage = result.ErrorMessage;
-                return Page();
-            }
-            return RedirectToPage("Index", new { year, month, day });
-        }
 
-        private void PrepareForShow(int? year, int? month, int? day)
-        {
-            Today = TzdbDateTimeZoneSource.Default.ForId("Asia/Tokyo").AtStrictly(LocalDateTime.FromDateTime(DateTime.UtcNow)).Date;
-            if (year.HasValue && month.HasValue)
-            {
-                SetMonth(new YearMonth(year.Value, month.Value));
-            }
-            else
-            {
-                SetMonth(Today.ToYearMonth());
-            }
-            if (day.HasValue)
-            {
-                SetSelectedDate(Month.OnDayOfMonth(day.Value));
-            }
-            else
-            {
-                SetSelectedDate(Today);
-            }
             StartTime = "09:00";
             DurationMinutesForEachSlot = 30;
             CountOfSlotForEachSlot = 1;
@@ -118,18 +74,38 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
             {
                 SelectedDates.Add(LocalDatePattern.CreateWithInvariantCulture("yyyy-MM-dd").Format(SelectedDate));
             }
+
+            return PageResult(year, month, day);
         }
 
-        private void SetMonth(YearMonth month)
+        public async Task<IActionResult> OnPost([FromQuery] int year, [FromQuery] int month, [FromQuery] int day)
         {
-            Month = month;
-            PrevMonth = Month.ToDateInterval().Start.PlusDays(-1).ToYearMonth();
-            NextMonth = Month.ToDateInterval().End.PlusDays(1).ToYearMonth();
-        }
+            if (!ModelState.IsValid)
+            {
+                ErrorMessage = "入力に誤りがあります。";
+                return PageResult(year, month, day);
+            }
+            if (!SelectedDates.Any())
+            {
+                ErrorMessage = "対象の日を1日以上は設定してください。";
+                return PageResult(year, month, day);
+            }
+            var startTime = LocalTimePattern.Create("HH:mm", CultureInfo.CurrentCulture).Parse(StartTime!);
+            if (!startTime.Success)
+            {
+                ErrorMessage = "入力に誤りがあります。";
+                return PageResult(year, month, day);
+            }
 
-        private void SetSelectedDate(LocalDate date)
-        {
-            SelectedDate = date;
+            var date = new LocalDate(year, month, day);
+            var result = await _service.CreateMultipleAppointmentSlotsAsync(date.At(startTime.Value), Period.FromMinutes(DurationMinutesForEachSlot!.Value), CountOfSlotForEachSlot!.Value, CountOfSlotsToCreate!.Value);
+            if (!result.Succeeded)
+            {
+                ErrorMessage = result.ErrorMessage;
+                return PageResult(year, month, day);
+            }
+
+            return RedirectToPage("Index", new { year, month, day });
         }
     }
 }

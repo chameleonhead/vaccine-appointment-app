@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using NodaTime;
 using NodaTime.Text;
-using NodaTime.TimeZones;
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Threading.Tasks;
@@ -19,11 +17,7 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
         private readonly AppointmentService _service;
         private readonly ILogger<IndexModel> _logger;
 
-        public LocalDate Today { get; set; }
-        public YearMonth Month { get; set; }
         public LocalDate SelectedDate { get; set; }
-        public YearMonth PrevMonth { get; set; }
-        public YearMonth NextMonth { get; set; }
 
         public string? ErrorMessage { get; set; }
 
@@ -45,9 +39,24 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
             _logger = logger;
         }
 
-        public void OnGet([FromQuery] int year, [FromQuery] int month, [FromQuery] int day)
+        private IActionResult PageResult(int year, int month, int day)
         {
-            PrepareForShow(year, month, day);
+            SelectedDate = new LocalDate(year, month, day);
+            return Page();
+        }
+
+        public IActionResult OnGet([FromQuery] int year, [FromQuery] int month, [FromQuery] int day)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToPage("Index", new { year, month, day });
+            }
+
+            StartTime = "09:00";
+            DurationMinutes = 30;
+            CountOfSlot = 1;
+
+            return PageResult(year, month, day);
         }
 
         public async Task<IActionResult> OnPost([FromQuery] int year, [FromQuery] int month, [FromQuery] int day)
@@ -55,60 +64,22 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
             if (!ModelState.IsValid)
             {
                 ErrorMessage = "ì¸óÕÇ…åÎÇËÇ™Ç†ÇËÇ‹Ç∑ÅB";
-                PrepareForShow(year, month, day);
-                return Page();
+                return PageResult(year, month, day);
             }
             var startTime = LocalTimePattern.Create("HH:mm", CultureInfo.CurrentCulture).Parse(StartTime!);
             if (!startTime.Success)
             {
                 ErrorMessage = "ì¸óÕÇ…åÎÇËÇ™Ç†ÇËÇ‹Ç∑ÅB";
-                PrepareForShow(year, month, day);
-                return Page();
+                return PageResult(year, month, day);
             }
             var date = new LocalDate(year, month, day);
             var result = await _service.CreateAppointmentSlotAsync(date.At(startTime.Value), Period.FromMinutes(DurationMinutes!.Value), CountOfSlot!.Value);
             if (!result.Succeeded)
             {
                 ErrorMessage = result.ErrorMessage;
-                return Page();
+                return PageResult(year, month, day);
             }
             return RedirectToPage("Index", new { year, month, day });
-        }
-
-        private void PrepareForShow(int? year, int? month, int? day)
-        {
-            Today = TzdbDateTimeZoneSource.Default.ForId("Asia/Tokyo").AtStrictly(LocalDateTime.FromDateTime(DateTime.UtcNow)).Date;
-            if (year.HasValue && month.HasValue)
-            {
-                SetMonth(new YearMonth(year.Value, month.Value));
-            }
-            else
-            {
-                SetMonth(Today.ToYearMonth());
-            }
-            if (day.HasValue)
-            {
-                SetSelectedDate(Month.OnDayOfMonth(day.Value));
-            }
-            else
-            {
-                SetSelectedDate(Today);
-            }
-            StartTime = "09:00";
-            DurationMinutes = 30;
-            CountOfSlot = 1;
-        }
-
-        private void SetMonth(YearMonth month)
-        {
-            Month = month;
-            PrevMonth = Month.ToDateInterval().Start.PlusDays(-1).ToYearMonth();
-            NextMonth = Month.ToDateInterval().End.PlusDays(1).ToYearMonth();
-        }
-
-        private void SetSelectedDate(LocalDate date)
-        {
-            SelectedDate = date;
         }
     }
 }

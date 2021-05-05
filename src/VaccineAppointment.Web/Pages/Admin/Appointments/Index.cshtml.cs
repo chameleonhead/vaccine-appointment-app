@@ -16,11 +16,7 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
         private readonly AppointmentService _service;
         private readonly ILogger<IndexModel> _logger;
 
-        public LocalDate Today { get; set; }
-        public YearMonth Month { get; set; }
         public LocalDate SelectedDate { get; set; }
-        public YearMonth PrevMonth { get; set; }
-        public YearMonth NextMonth { get; set; }
 
         public AppointmentsForDay? Appointments { get; set; }
 
@@ -30,38 +26,22 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
             _logger = logger;
         }
 
-        public async Task OnGet([FromQuery] int? year, [FromQuery] int? month, [FromQuery] int? day)
+        private async Task<IActionResult> PageResult(int year, int month, int day)
         {
-            Today = TzdbDateTimeZoneSource.Default.ForId("Asia/Tokyo").AtStrictly(LocalDateTime.FromDateTime(DateTime.UtcNow)).Date;
-            if (year.HasValue && month.HasValue)
-            {
-                SetMonth(new YearMonth(year.Value, month.Value));
-            }
-            else
-            {
-                SetMonth(Today.ToYearMonth());
-            }
-            if (day.HasValue)
-            {
-                SetSelectedDate(Month.OnDayOfMonth(day.Value));
-            }
-            else
-            {
-                SetSelectedDate(Today);
-            }
+            SelectedDate = new LocalDate(year, month, day);
             Appointments = await _service.SearchAppointmentsByDateAsync(SelectedDate);
+            return Page();
         }
 
-        private void SetMonth(YearMonth month)
+        public Task<IActionResult> OnGet([FromQuery] int? year, [FromQuery] int? month, [FromQuery] int? day)
         {
-            Month = month;
-            PrevMonth = Month.ToDateInterval().Start.PlusDays(-1).ToYearMonth();
-            NextMonth = Month.ToDateInterval().End.PlusDays(1).ToYearMonth();
-        }
+            if (year.HasValue && month.HasValue && day.HasValue)
+            {
+                return PageResult(year.Value, month.Value, day.Value);
+            }
 
-        private void SetSelectedDate(LocalDate date)
-        {
-            SelectedDate = date;
+            var today = TzdbDateTimeZoneSource.Default.ForId("Asia/Tokyo").AtStrictly(LocalDateTime.FromDateTime(DateTime.UtcNow)).Date;
+            return PageResult(today.Year, today.Month, today.Day);
         }
     }
 }
