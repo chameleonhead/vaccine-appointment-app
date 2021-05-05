@@ -31,6 +31,6 @@
             <span>次の月</span>
         }
         <h1>@month.Year 年 @month.Month 月</h1>
-        <partial name="_Calendar" model="@(new CalendarViewModel(month, "SelectDate"))" />
+        <partial name="_Calendar" model="@(new CalendarViewModel(month, "SelectDate", d => !Model.Appointments!.IsAvailable(d)))" />
     </div>
 </div>

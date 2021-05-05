@@ -79,8 +79,8 @@ namespace VaccineAppointment.Web.Tests.Endpoints
         {
             var aggregatesForDay = await sut!.SearchAppointmentsByDateAsync(new LocalDate(2021, 5, 5));
             Assert.AreEqual(new LocalDate(2021, 5, 5), aggregatesForDay.Date);
-            Assert.IsFalse(aggregatesForDay.PrevDateAvailable);
-            Assert.IsFalse(aggregatesForDay.NextDateAvailable);
+            Assert.IsTrue(aggregatesForDay.PrevDateAvailable);
+            Assert.IsTrue(aggregatesForDay.NextDateAvailable);
             Assert.IsFalse(aggregatesForDay.AvailableSlots.Any());
         }
 
@@ -197,14 +197,14 @@ namespace VaccineAppointment.Web.Tests.Endpoints
         {
             var aggregatesForMonth = await sut!.SearchAppointmentsByYearMonthAsync(new YearMonth(2021, 5));
             Assert.AreEqual(new YearMonth(2021, 5), aggregatesForMonth.Month);
-            Assert.IsFalse(aggregatesForMonth.PrevMonthAvailable);
-            Assert.IsFalse(aggregatesForMonth.NextMonthAvailable);
+            Assert.IsTrue(aggregatesForMonth.PrevMonthAvailable);
+            Assert.IsTrue(aggregatesForMonth.NextMonthAvailable);
             Assert.IsTrue(aggregatesForMonth.Appointments.Any());
             foreach (var daily in aggregatesForMonth.Appointments)
             {
                 Assert.AreEqual(new YearMonth(2021, 5), daily.Date.ToYearMonth());
-                Assert.IsFalse(daily.PrevDateAvailable);
-                Assert.IsFalse(daily.NextDateAvailable);
+                Assert.IsTrue(daily.PrevDateAvailable);
+                Assert.IsTrue(daily.NextDateAvailable);
             }
         }
 

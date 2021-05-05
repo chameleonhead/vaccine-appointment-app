@@ -22,15 +22,10 @@ namespace VaccineAppointment.Web.Services.Scheduling
             var aggregates = await _repository.SearchAsync(interval.Start, interval.End);
             var config = await _configManager.GetConfigAsync();
 
-            var response = new AppointmentsForMonth(yearMonth,
-                config == null ? false : config.AvailableIntervalStart.ToYearMonth() < yearMonth,
-                config == null ? false : yearMonth < config.AvailableIntervalEnd.ToYearMonth());
+            var response = new AppointmentsForMonth(yearMonth, config);
             foreach (var date in interval)
             {
-                response.Appointments.Add(new AppointmentsForDay(date,
-                    config == null ? false : config.AvailableIntervalStart < date,
-                    config == null ? false : date < config.AvailableIntervalEnd,
-                    aggregates.Where(a => a.From.Date == date).ToList()));
+                response.Appointments.Add(new AppointmentsForDay(date, config, aggregates.Where(a => a.From.Date == date).ToList()));
             }
             return response;
         }
@@ -39,10 +34,7 @@ namespace VaccineAppointment.Web.Services.Scheduling
         {
             var aggregates = await _repository.SearchAsync(date, date);
             var config = await _configManager.GetConfigAsync();
-            return new AppointmentsForDay(date,
-                config == null ? false : config.AvailableIntervalStart < date,
-                config == null ? false : date < config.AvailableIntervalEnd,
-                aggregates.Where(a => a.From.Date == date).ToList());
+            return new AppointmentsForDay(date, config, aggregates.Where(a => a.From.Date == date).ToList());
         }
 
         public async Task<AppointmentAggregate?> FindAppointmentSlotByIdAsync(string appointmentSlotId)
@@ -84,7 +76,7 @@ namespace VaccineAppointment.Web.Services.Scheduling
                 return OperationResult.Fail("予約枠に予約があるため更新できません。");
             }
             var aggregates = await SearchAppointmentsByDateAsync(startTime.Date);
-            if (aggregates.AvailableSlots.Any(s => s.IsOverlap(startTime, duration)))
+            if (aggregates.AvailableSlots.Where(s => s.Id != id).Any(s => s.IsOverlap(startTime, duration)))
             {
                 return OperationResult.Fail("予約枠が重複しています。");
             }

@@ -56,7 +56,14 @@
                 @for (var dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++)
                 {
                     var date = firstDayOfCalendar.PlusDays(line * 7 + dayOfWeek);
-                    @if (date == Model.SelectedDate)
+                    @if (Model.IsDisable(date))
+                    {
+                        <td class="text-right text-muted">
+                            @date.Day
+                        </td>
+
+                    }
+                    else if (date == Model.SelectedDate)
                     {
                         <td class="text-right bg-light">
                             <a asp-page="@Model.LinkPage" asp-route-year="@date.Year" asp-route-month="@date.Month" asp-route-day="@date.Day">@date.Day</a>

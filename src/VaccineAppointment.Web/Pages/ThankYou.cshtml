@@ -2,6 +2,7 @@
 @model ThankYouModel
 @{
     ViewData["Title"] = "Home page";
+    var id = Model.Appointment!.Id;
     var date = Model.Appointment!.From;
     var from = Model.Appointment!.From;
     var to = Model.Appointment!.To;
@@ -19,6 +20,12 @@
         <h2>@from.TimeOfDay - @to.TimeOfDay</h2>
         <hr />
         <div class="list-group text-left">
+            <div class="list-group-item">
+                <div class="row">
+                    <div class="col-md-3 font-weight-bold text-md-right">予約ID</div>
+                    <div class="col-md-9">@id</div>
+                </div>
+            </div>
             <div class="list-group-item">
                 <div class="row">
                     <div class="col-md-3 font-weight-bold text-md-right">名前</div>
