@@ -16,6 +16,7 @@ namespace VaccineAppointment.Web.Tests.Endpoints
         private VaccineAppointmentContext? db;
         private AppointmentAggregateRepository? repository;
         private AppointmentConfigManager? configManager;
+        private EmailService? emailService;
         private AppointmentService? sut;
 
         [TestInitialize]
@@ -24,7 +25,8 @@ namespace VaccineAppointment.Web.Tests.Endpoints
             db = Utils.CreateInMemoryContext();
             repository = new AppointmentAggregateRepository(db!);
             configManager = new AppointmentConfigManager(db!);
-            sut = new AppointmentService(repository, configManager);
+            emailService = new EmailService(new EmailConfiguration());
+            sut = new AppointmentService(repository, configManager, emailService);
         }
 
         [TestMethod]

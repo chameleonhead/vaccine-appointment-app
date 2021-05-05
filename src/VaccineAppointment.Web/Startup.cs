@@ -43,6 +43,7 @@ namespace VaccineAppointment.Web
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IAppointmentAggregateRepository, AppointmentAggregateRepository>();
             services.AddTransient<IAppointmentConfigManager, AppointmentConfigManager>();
+            services.AddTransient<IEmailService, EmailService>(services => new EmailService(Configuration.GetSection("VaccineAppointment.Web:Email").Get<EmailConfiguration>()));
             services.AddTransient<AppointmentService>();
             services.AddTransient<UserService>();
         }

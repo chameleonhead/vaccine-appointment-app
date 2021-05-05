@@ -10,11 +10,13 @@ namespace VaccineAppointment.Web.Services.Scheduling
     {
         private readonly IAppointmentAggregateRepository _repository;
         private readonly IAppointmentConfigManager _configManager;
+        private readonly IEmailService _emailService;
 
-        public AppointmentService(IAppointmentAggregateRepository repository, IAppointmentConfigManager configManager)
+        public AppointmentService(IAppointmentAggregateRepository repository, IAppointmentConfigManager configManager, IEmailService emailService)
         {
             _repository = repository;
             _configManager = configManager;
+            _emailService = emailService;
         }
 
         public async Task<AppointmentsForMonth> SearchAppointmentsByYearMonthAsync(YearMonth yearMonth)
@@ -140,15 +142,41 @@ namespace VaccineAppointment.Web.Services.Scheduling
             {
                 return OperationResult.Fail("予約の上限に達しました。");
             }
-            var appointmentId = aggregate.AddAppointment(name, email, sex, age);
+            aggregate.AddAppointment(name, email, sex, age);
             await _repository.UpdateAsync(aggregate);
-            return MakeAppointmentResult.Ok(appointmentId);
+            return OperationResult.Ok();
         }
 
         public async Task<OperationResult> MakeAppointmentAsync(string id, string name, string email, string sex, int age)
         {
-            var result = await CreateAppointmentAsync(id, name, email, sex, age);
-            return result;
+            var aggregate = await FindAppointmentSlotByIdAsync(id);
+            if (aggregate == null)
+            {
+                return OperationResult.Fail("予約枠が存在しません。");
+            }
+            if (!aggregate.CanCreateAppointment)
+            {
+                return OperationResult.Fail("予約の上限に達しました。");
+            }
+            var appointmentId = aggregate.AddAppointment(name, email, sex, age);
+            await _repository.UpdateAsync(aggregate);
+            await _emailService.SendMailAsync(email, "予約が完了しました。", @$"{name}様
+
+当システムをご利用いただき、誠にありがとうございます。
+予約を以下の通り承りました。
+
+予約ID: {appointmentId}
+予約日: {aggregate.From.Date}
+お時間: {aggregate.From.TimeOfDay} - {aggregate.To.TimeOfDay}
+
+当日は所定の時間までにお越しください。
+
+本メールには返信してもお返事が出来ませんのでご了承願います。
+
+----------------------------------
+ワクチン予約Webサイト
+");
+            return MakeAppointmentResult.Ok(appointmentId);
         }
     }
 }
