@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NodaTime;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VaccineAppointment.Web.Infrastructure;
@@ -460,7 +461,7 @@ namespace VaccineAppointment.Web.Tests.Endpoints
         [TestMethod]
         public async Task CreateMultipleAppointmentSlotsAsync_should_return_ok()
         {
-            var result = await sut!.CreateMultipleAppointmentSlotsAsync(new LocalDateTime(2021, 5, 1, 10, 0), Period.FromHours(1), 1, 2);
+            var result = await sut!.CreateMultipleAppointmentSlotsAsync(new List<LocalDate>() { new LocalDate(2021, 5, 1) }, new LocalTime(10, 0), Period.FromHours(1), 1, 2);
             Assert.IsTrue(result.Succeeded);
 
             var slots = await db!.Slots.OrderBy(d => d.From).ToListAsync();

@@ -1,5 +1,6 @@
 ﻿using NodaTime;
 using System.Collections.Generic;
+using System.Linq;
 using VaccineAppointment.Web.Models.Scheduling;
 
 namespace VaccineAppointment.Web.Services.Scheduling
@@ -11,7 +12,7 @@ namespace VaccineAppointment.Web.Services.Scheduling
             PrevDateAvailable = config == null || config.AvailableIntervalStart < date;
             NextDateAvailable = config == null || date < config.AvailableIntervalEnd;
             Date = date;
-            AvailableSlots = slots;
+            AvailableSlots = slots.OrderBy(a => a.From).ToList();
         }
 
         public LocalDate Date { get; }

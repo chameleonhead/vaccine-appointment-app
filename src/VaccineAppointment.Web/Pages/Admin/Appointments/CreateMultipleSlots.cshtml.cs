@@ -93,8 +93,15 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
                 return PageResult(year, month, day);
             }
 
-            var date = new LocalDate(year, month, day);
-            var result = await _service.CreateMultipleAppointmentSlotsAsync(date.At(startTime.Value), Period.FromMinutes(DurationMinutesForEachSlot!.Value), CountOfSlotForEachSlot!.Value, CountOfSlotsToCreate!.Value);
+            var dates = SelectedDates
+                .Select(str => LocalDatePattern.CreateWithInvariantCulture("yyyy-MM-dd").Parse(str))
+                .ToList();
+            if (dates.Any(r => !r.Success))
+            {
+                ErrorMessage = "“ü—Í‚ÉŒë‚è‚ª‚ ‚è‚Ü‚·B";
+                return PageResult(year, month, day);
+            }
+            var result = await _service.CreateMultipleAppointmentSlotsAsync(dates.Select(d => d.Value).OrderBy(d => d).ToList(), startTime.Value, Period.FromMinutes(DurationMinutesForEachSlot!.Value), CountOfSlotForEachSlot!.Value, CountOfSlotsToCreate!.Value);
             if (!result.Succeeded)
             {
                 ErrorMessage = result.ErrorMessage;
