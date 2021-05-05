@@ -341,5 +341,120 @@ namespace VaccineAppointment.Web.Tests.Endpoints
             Assert.AreEqual(Period.FromHours(1), slot.Duration);
             Assert.AreEqual(1, slot.CountOfSlot);
         }
+
+        [TestMethod]
+        public async Task CreateAppointmentSlotAsync_should_return_fail_given_slot_already_exists()
+        {
+            await sut!.CreateAppointmentSlotAsync(new LocalDateTime(2021, 5, 1, 10, 0), Period.FromHours(1), 1);
+            var result = await sut!.CreateAppointmentSlotAsync(new LocalDateTime(2021, 5, 1, 10, 0), Period.FromHours(1), 1);
+            Assert.IsFalse(result.Succeeded);
+            Assert.AreEqual("—\–ñ˜g‚ªd•¡‚µ‚Ä‚¢‚Ü‚·B", result.ErrorMessage);
+        }
+
+        [TestMethod]
+        public async Task CreateAppointmentSlotAsync_should_return_fail_given_slot_not_overlap()
+        {
+            await sut!.CreateAppointmentSlotAsync(new LocalDateTime(2021, 5, 1, 10, 0), Period.FromHours(1), 1);
+            var result = await sut!.CreateAppointmentSlotAsync(new LocalDateTime(2021, 5, 1, 9, 0), Period.FromHours(1), 1);
+            Assert.IsTrue(result.Succeeded);
+        }
+
+        [TestMethod]
+        public async Task CreateAppointmentSlotAsync_should_return_fail_given_slot_not_overlap2()
+        {
+            await sut!.CreateAppointmentSlotAsync(new LocalDateTime(2021, 5, 1, 10, 0), Period.FromHours(1), 1);
+            var result = await sut!.CreateAppointmentSlotAsync(new LocalDateTime(2021, 5, 1, 11, 0), Period.FromHours(1), 1);
+            Assert.IsTrue(result.Succeeded);
+        }
+
+        [TestMethod]
+        public async Task UpdateAppointmentSlotAsync_should_return_success()
+        {
+            var createResult = await sut!.CreateAppointmentSlotAsync(new LocalDateTime(2021, 5, 1, 10, 0), Period.FromHours(1), 1);
+            var id = (createResult as CreateAppointmentSlotResult)!.Id;
+
+            var result = await sut!.UpdateAppointmentSlotAsync(id, new LocalDateTime(2021, 5, 1, 11, 0), Period.FromHours(1), 1);
+            Assert.IsTrue(result.Succeeded);
+
+            var slot = await db!.Slots.FirstAsync(s => s.Id == id);
+            Assert.AreEqual(new LocalDateTime(2021, 5, 1, 11, 0), slot.From);
+            Assert.AreEqual(Period.FromHours(1), slot.Duration);
+            Assert.AreEqual(1, slot.CountOfSlot);
+        }
+
+        [TestMethod]
+        public async Task UpdateAppointmentSlotAsync_should_return_fail_given_slot_not_exists()
+        {
+            var result = await sut!.UpdateAppointmentSlotAsync("unknownid", new LocalDateTime(2021, 5, 1, 9, 0), Period.FromHours(1), 1);
+            Assert.IsFalse(result.Succeeded);
+            Assert.AreEqual("—\–ñ˜g‚ª‘¶İ‚µ‚Ü‚¹‚ñB", result.ErrorMessage);
+        }
+
+        [TestMethod]
+        public async Task UpdateAppointmentSlotAsync_should_return_fail_given_slot_already_exists()
+        {
+            await sut!.CreateAppointmentSlotAsync(new LocalDateTime(2021, 5, 1, 9, 0), Period.FromHours(1), 1);
+            var createResult = await sut!.CreateAppointmentSlotAsync(new LocalDateTime(2021, 5, 1, 10, 0), Period.FromHours(1), 1);
+            var id = (createResult as CreateAppointmentSlotResult)!.Id;
+
+            var result = await sut!.UpdateAppointmentSlotAsync(id, new LocalDateTime(2021, 5, 1, 9, 0), Period.FromHours(1), 1);
+            Assert.IsFalse(result.Succeeded);
+            Assert.AreEqual("—\–ñ˜g‚ªd•¡‚µ‚Ä‚¢‚Ü‚·B", result.ErrorMessage);
+        }
+
+        [TestMethod]
+        public async Task UpdateAppointmentSlotAsync_should_return_fail_given_appointment_exists()
+        {
+            var createResult = await sut!.CreateAppointmentSlotAsync(new LocalDateTime(2021, 5, 1, 10, 0), Period.FromHours(1), 1);
+            var id = (createResult as CreateAppointmentSlotResult)!.Id;
+            await sut!.CreateAppointmentAsync(id, "User 1", "user@example.com", "F", 10);
+
+            var result = await sut!.UpdateAppointmentSlotAsync(id, new LocalDateTime(2021, 5, 1, 11, 0), Period.FromHours(1), 1);
+            Assert.IsFalse(result.Succeeded);
+            Assert.AreEqual("—\–ñ˜g‚É—\–ñ‚ª‚ ‚é‚½‚ßXV‚Å‚«‚Ü‚¹‚ñB", result.ErrorMessage);
+        }
+
+        [TestMethod]
+        public async Task UpdateAppointmentSlotAsync_should_return_fail_given_slot_not_overlap()
+        {
+            await sut!.CreateAppointmentSlotAsync(new LocalDateTime(2021, 5, 1, 9, 0), Period.FromHours(1), 1);
+            var createResult = await sut!.CreateAppointmentSlotAsync(new LocalDateTime(2021, 5, 1, 10, 0), Period.FromHours(1), 1);
+            var id = (createResult as CreateAppointmentSlotResult)!.Id;
+
+            var result = await sut!.UpdateAppointmentSlotAsync(id, new LocalDateTime(2021, 5, 1, 11, 0), Period.FromHours(1), 1);
+            Assert.IsTrue(result.Succeeded);
+        }
+
+        [TestMethod]
+        public async Task DeleteAppointmentSlotAsync_should_return_success()
+        {
+            var createResult = await sut!.CreateAppointmentSlotAsync(new LocalDateTime(2021, 5, 1, 10, 0), Period.FromHours(1), 1);
+            var id = (createResult as CreateAppointmentSlotResult)!.Id;
+
+            var result = await sut!.DeleteAppointmentSlotAsync(id);
+            Assert.IsTrue(result.Succeeded);
+
+            Assert.IsFalse(await db!.Slots.AnyAsync(s => s.Id == id));
+        }
+
+        [TestMethod]
+        public async Task DeleteAppointmentSlotAsync_should_return_fail_given_slot_not_exists()
+        {
+            var result = await sut!.DeleteAppointmentSlotAsync("unknownid");
+            Assert.IsFalse(result.Succeeded);
+            Assert.AreEqual("—\–ñ˜g‚ª‘¶İ‚µ‚Ü‚¹‚ñB", result.ErrorMessage);
+        }
+
+        [TestMethod]
+        public async Task DeleteAppointmentSlotAsync_should_return_fail_given_appointment_exists()
+        {
+            var createResult = await sut!.CreateAppointmentSlotAsync(new LocalDateTime(2021, 5, 1, 10, 0), Period.FromHours(1), 1);
+            var id = (createResult as CreateAppointmentSlotResult)!.Id;
+            await sut!.CreateAppointmentAsync(id, "User 1", "user@example.com", "F", 10);
+
+            var result = await sut!.DeleteAppointmentSlotAsync(id);
+            Assert.IsFalse(result.Succeeded);
+            Assert.AreEqual("—\–ñ˜g‚É—\–ñ‚ª‚ ‚é‚½‚ßíœ‚Å‚«‚Ü‚¹‚ñB", result.ErrorMessage);
+        }
     }
 }

@@ -1,6 +1,4 @@
 ﻿using NodaTime;
-using NodaTime.Text;
-using NodaTime.TimeZones;
 using System.Linq;
 using System.Threading.Tasks;
 using VaccineAppointment.Web.Models.Scheduling;
@@ -69,28 +67,69 @@ namespace VaccineAppointment.Web.Services.Scheduling
             {
                 return OperationResult.Fail("予約枠が重複しています。");
             }
-            await _repository.AddAsync(new AppointmentAggregate(startTime, duration, countOfSlot));
+            var aggregate = new AppointmentAggregate(startTime, duration, countOfSlot);
+            await _repository.AddAsync(aggregate);
+            return CreateAppointmentSlotResult.Ok(aggregate.Id);
+        }
+
+        public async Task<OperationResult> UpdateAppointmentSlotAsync(string id, LocalDateTime startTime, Period duration, int countOfSlot)
+        {
+            var aggregate = await FindAppointmentSlotByIdAsync(id);
+            if (aggregate == null)
+            {
+                return OperationResult.Fail("予約枠が存在しません。");
+            }
+            if (!aggregate.CanUpdate)
+            {
+                return OperationResult.Fail("予約枠に予約があるため更新できません。");
+            }
+            var aggregates = await SearchAppointmentsByDateAsync(startTime.Date);
+            if (aggregates.AvailableSlots.Any(s => s.IsOverlap(startTime, duration)))
+            {
+                return OperationResult.Fail("予約枠が重複しています。");
+            }
+            aggregate.EditSlot(startTime, duration, countOfSlot);
+            await _repository.UpdateAsync(aggregate);
             return OperationResult.Ok();
         }
 
-        public Task<OperationResult> UpdateAppointmentSlotAsync(string id, LocalDateTime startTime, Period duration, int countOfSlot)
+        public async Task<OperationResult> DeleteAppointmentSlotAsync(string id)
         {
-            return Task.FromResult(OperationResult.Ok());
+            var aggregate = await FindAppointmentSlotByIdAsync(id);
+            if (aggregate == null)
+            {
+                return OperationResult.Fail("予約枠が存在しません。");
+            }
+            if (!aggregate.CanUpdate)
+            {
+                return OperationResult.Fail("予約枠に予約があるため削除できません。");
+            }
+            await _repository.RemoveAsync(id);
+            return OperationResult.Ok();
         }
 
-        public Task<OperationResult> DeleteAppointmentSlotAsync(string id)
+        public async Task<OperationResult> CreateAppointmentAsync(string id, string name, string email, string sex, int age)
         {
-            return Task.FromResult(OperationResult.Ok());
+            var aggregate = await FindAppointmentSlotByIdAsync(id);
+            if (aggregate == null)
+            {
+                return OperationResult.Fail("予約枠が存在しません。");
+            }
+            aggregate.AddAppointment(name, email, sex, age);
+            await _repository.UpdateAsync(aggregate);
+            return OperationResult.Ok();
         }
 
-        public Task<MakeAppointmentResult> CreateAppointmentAsync(string id, string name, string email, string sex, int age)
+        public async Task<OperationResult> MakeAppointmentAsync(string id, string name, string email, string sex, int age)
         {
-            return Task.FromResult(MakeAppointmentResult.Ok(id));
-        }
-
-        public Task<MakeAppointmentResult> MakeAppointmentAsync(string id, string name, string email, string sex, int age)
-        {
-            return Task.FromResult(MakeAppointmentResult.Ok(id));
+            var aggregate = await FindAppointmentSlotByIdAsync(id);
+            if (aggregate == null)
+            {
+                return OperationResult.Fail("予約枠が存在しません。");
+            }
+            var appointmentId = aggregate.AddAppointment(name, email, sex, age);
+            await _repository.UpdateAsync(aggregate);
+            return MakeAppointmentResult.Ok(appointmentId);
         }
     }
 }

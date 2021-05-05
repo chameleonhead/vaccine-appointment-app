@@ -11,6 +11,7 @@ namespace VaccineAppointment.Web.Models.Scheduling
         {
             Slot = new AppointmentSlot()
             {
+                Id = Guid.NewGuid().ToString(),
                 From = from,
                 Duration = duration,
                 CountOfSlot = countOfSlot,
@@ -41,9 +42,42 @@ namespace VaccineAppointment.Web.Models.Scheduling
             return Appointments.FirstOrDefault(a => a.Id == id);
         }
 
-        internal bool IsOverlap(LocalDateTime startTime, Period duration)
+        public bool IsOverlap(LocalDateTime from, Period duration)
         {
-            throw new NotImplementedException();
+            if (To <= from)
+            {
+                return false;
+            }
+            var to = from + duration;
+            if (to <= From)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public void EditSlot(LocalDateTime from, Period duration, int countOfSlot)
+        {
+            Slot.From = from;
+            Slot.Duration = duration;
+            Slot.CountOfSlot = countOfSlot;
+        }
+
+        public string AddAppointment(string name, string email, string sex, int age)
+        {
+            var appointmentId = Guid.NewGuid().ToString();
+            Appointments.Add(new Appointment()
+            {
+                Id = appointmentId,
+                AppointmentSlotId = Id,
+                From = From,
+                Duration = Duration,
+                Name = name,
+                Email = email,
+                Sex = sex,
+                Age = age,
+            });
+            return appointmentId;
         }
     }
 }

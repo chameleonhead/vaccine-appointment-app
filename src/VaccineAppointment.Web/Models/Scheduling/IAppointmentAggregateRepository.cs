@@ -11,5 +11,6 @@ namespace VaccineAppointment.Web.Models.Scheduling
         Task<List<AppointmentAggregate>> SearchAsync(LocalDate from, LocalDate to);
         Task AddAsync(AppointmentAggregate appointmentAggregate);
         Task UpdateAsync(AppointmentAggregate appointmentAggregate);
+        Task RemoveAsync(string id);
     }
 }

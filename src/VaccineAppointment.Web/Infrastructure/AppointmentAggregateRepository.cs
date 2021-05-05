@@ -55,9 +55,31 @@ namespace VaccineAppointment.Web.Infrastructure
             await trans.CommitAsync();
         }
 
-        public Task UpdateAsync(AppointmentAggregate appointmentAggregate)
+        public async Task UpdateAsync(AppointmentAggregate appointmentAggregate)
         {
-            throw new NotImplementedException();
+            using var trans = await db.Database.BeginTransactionAsync();
+            db.Slots.Update(appointmentAggregate.Slot);
+            await db.SaveChangesAsync();
+
+            db.Appointments.RemoveRange(db.Appointments.Where(a => a.AppointmentSlotId == appointmentAggregate.Id));
+            await db.Appointments.AddRangeAsync(appointmentAggregate.Appointments);
+            await db.SaveChangesAsync();
+            await trans.CommitAsync();
+        }
+
+        public async Task RemoveAsync(string id)
+        {
+            using var trans = await db.Database.BeginTransactionAsync();
+            var slot = await db.Slots.FirstOrDefaultAsync(s => s.Id == id);
+            db.Slots.Remove(slot);
+            await db.SaveChangesAsync();
+
+            if (await db.Appointments.AnyAsync(a => a.AppointmentSlotId == id))
+            {
+                await trans.RollbackAsync();
+                throw new InvalidOperationException("appointment still exists");
+            }
+            await trans.CommitAsync();
         }
     }
 }

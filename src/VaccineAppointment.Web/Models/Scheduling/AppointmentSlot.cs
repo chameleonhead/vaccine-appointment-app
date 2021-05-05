@@ -7,7 +7,7 @@ namespace VaccineAppointment.Web.Models.Scheduling
     {
         public AppointmentSlot()
         {
-            Id = Guid.NewGuid().ToString();
+            Id = Guid.Empty.ToString();
             Duration = Period.Zero;
         }
 

@@ -6,7 +6,7 @@ namespace VaccineAppointment.Web.Models.Users
     {
         public User()
         {
-            Id = Guid.NewGuid().ToString();
+            Id = Guid.Empty.ToString();
             Username = "Unknown";
             Role = "User";
         }

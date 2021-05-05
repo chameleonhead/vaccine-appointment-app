@@ -7,7 +7,7 @@ namespace VaccineAppointment.Web.Models.Scheduling
     {
         public AppointmentConfig()
         {
-            Id = Guid.NewGuid().ToString();
+            Id = Guid.Empty.ToString();
         }
 
         public string Id { get; set; }

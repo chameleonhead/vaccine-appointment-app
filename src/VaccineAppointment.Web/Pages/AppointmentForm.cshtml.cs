@@ -49,7 +49,13 @@ namespace VaccineAppointment.Web.Pages
                 return Page();
             }
             var result = await _service.MakeAppointmentAsync(id, Name!, Email!, Sex!, Age!.Value);
-            return RedirectToPage("ThankYou", new { SlotId = id, Id = result.AppointmentId });
+            if (!result.Succeeded)
+            {
+                ErrorMessage = result.ErrorMessage;
+                return Page();
+            }
+            var appointmentId = (result as MakeAppointmentResult)!.AppointmentId;
+            return RedirectToPage("ThankYou", new { SlotId = id, Id = appointmentId });
         }
     }
 }
