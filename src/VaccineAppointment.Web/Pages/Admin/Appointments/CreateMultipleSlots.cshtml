@@ -20,7 +20,7 @@
             <a class="btn btn-link pl-0" asp-page="CreateMultipleSlots" asp-route-year="@nextMonth.Year" asp-route-month="@nextMonth.Month" asp-route-day="@nextMonth.OnDayOfMonth(1).Day">次の月</a>
         </div>
         <h2>@Model.Month.Year 年 @Model.Month.Month 月</h2>
-        <partial name="_Calendar" model="@(new CalendarViewModel() { Month = month, SelectedDate = Model.SelectedDate, LinkPage="CreateSlot" })" />
+        <partial name="_Calendar" model="@(new CalendarViewModel(selectedDate, "CreateSlot"))" />
     </div>
     <div class="col-lg-8">
         <div class="d-flex justify-content-between">
