@@ -12,6 +12,8 @@ namespace VaccineAppointment.Web.Services.Scheduling
         public Period Duration => Slot.Duration;
         public LocalDateTime To => Slot.To;
         public int CountOfSlot => Slot.CountOfSlot;
+
+        public bool CanCreateAppointment => CountOfSlot > Appointments.Count;
         public bool CanDelete => !Appointments.Any();
         public bool CanUpdate => !Appointments.Any();
 

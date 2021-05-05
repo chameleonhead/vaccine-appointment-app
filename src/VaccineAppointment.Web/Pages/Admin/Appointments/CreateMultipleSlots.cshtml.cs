@@ -82,7 +82,7 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
                 return Page();
             }
             var date = new LocalDate(year, month, day);
-            var result = await _service.CreateAppointmentSlotsAsync(date.At(startTime.Value), Period.FromMinutes(DurationMinutesForEachSlot!.Value), CountOfSlotForEachSlot!.Value, CountOfSlotsToCreate!.Value);
+            var result = await _service.CreateMultipleAppointmentSlotsAsync(date.At(startTime.Value), Period.FromMinutes(DurationMinutesForEachSlot!.Value), CountOfSlotForEachSlot!.Value, CountOfSlotsToCreate!.Value);
             if (!result.Succeeded)
             {
                 ErrorMessage = result.ErrorMessage;

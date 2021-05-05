@@ -64,7 +64,7 @@ namespace VaccineAppointment.Web.Services.Scheduling
             return response;
         }
 
-        public Task<OperationResult> CreateAppointmentSlotsAsync(LocalDateTime localDateTime, Period duration, int countOfSlot, int repeatCount)
+        public Task<OperationResult> CreateMultipleAppointmentSlotsAsync(LocalDateTime localDateTime, Period duration, int countOfSlot, int repeatCount)
         {
             return Task.FromResult(OperationResult.Ok());
         }
@@ -82,6 +82,11 @@ namespace VaccineAppointment.Web.Services.Scheduling
         public Task<OperationResult> DeleteAppointmentSlotAsync(string id)
         {
             return Task.FromResult(OperationResult.Ok());
+        }
+        
+        public Task<MakeAppointmentResult> CreateAppointmentAsync(string id, string name, string email, string sex, int age)
+        {
+            return Task.FromResult(MakeAppointmentResult.Ok(id));
         }
 
         public Task<MakeAppointmentResult> MakeAppointmentAsync(string id, string name, string email, string sex, int age)

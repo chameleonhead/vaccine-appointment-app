@@ -38,6 +38,7 @@
         <div class="d-flex justify-content-between">
             <h3 class="mb-1">予約枠 @slot.From.TimeOfDay - @slot.To.TimeOfDay</h3>
             <div class="d-flex align-items-center">
+                <a class="btn btn-sm btn-outline-secondary @(slot.CanCreateAppointment ? "" : "disabled") mr-2" asp-page="CreateAppointment" asp-route-year="@selectedDate.Year" asp-route-month="@selectedDate.Month" asp-route-day="@selectedDate.Day" asp-route-id="@slot.Id">予約登録</a>
                 <a class="btn btn-sm btn-outline-danger @(slot.CanDelete ? "" : "disabled") mr-2" asp-page="DeleteSlot" asp-route-year="@selectedDate.Year" asp-route-month="@selectedDate.Month" asp-route-day="@selectedDate.Day" asp-route-id="@slot.Id">削除</a>
                 <a class="btn btn-sm btn-outline-primary @(slot.CanUpdate ? "" : "disabled")" asp-page="EditSlot" asp-route-year="@selectedDate.Year" asp-route-month="@selectedDate.Month" asp-route-day="@selectedDate.Day" asp-route-id="@slot.Id">編集</a>
             </div>
