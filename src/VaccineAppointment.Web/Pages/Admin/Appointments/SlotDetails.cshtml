@@ -58,13 +58,13 @@
             <div class="list-group">
                 @foreach (var appointment in slot.Appointments)
                 {
-                    <div class="list-group-item">
+                    <a class="list-group-item list-group-item-action" asp-page="Appointment" asp-route-id="@slot.Id">
                         <div class="d-flex w-100 justify-content-between">
                             <h5 class="mb-1">@appointment.Name</h5>
                         </div>
                         <div class="row">
                             <div class="col-4">メールアドレス</div>
-                            <div class="col-8"><a href="mailto:@appointment.Email">@appointment.Email</a></div>
+                            <div class="col-8">@appointment.Email</div>
                         </div>
                         <div class="row">
                             <div class="col-4">年齢</div>
@@ -74,8 +74,7 @@
                             <div class="col-4">性別</div>
                             <div class="col-8">@appointment.Sex</div>
                         </div>
-                        <div><a class="btn btn-outline-dark" asp-page="Appointment" asp-route-id="@slot.Id">詳細</a></div>
-                    </div>
+                    </a>
                 }
             </div>
         }

@@ -19,7 +19,7 @@ namespace VaccineAppointment.Web.Pages
         public YearMonth PrevMonth { get; set; }
         public YearMonth NextMonth { get; set; }
 
-        public MonthlyAppointment? Appointments { get; set; }
+        public AppointmentsForMonth? Appointments { get; set; }
 
         public IndexModel(ILogger<IndexModel> logger, AppointmentService service)
         {

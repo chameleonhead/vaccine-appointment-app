@@ -6,7 +6,6 @@ using NodaTime;
 using NodaTime.TimeZones;
 using System;
 using System.Threading.Tasks;
-using VaccineAppointment.Web.Models.Scheduling;
 using VaccineAppointment.Web.Services.Scheduling;
 
 namespace VaccineAppointment.Web.Pages.Admin.Appointments
@@ -23,7 +22,7 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
         public YearMonth PrevMonth { get; set; }
         public YearMonth NextMonth { get; set; }
 
-        public AppointmentSlot? Slot { get; set; }
+        public AppointmentsForSlot? Slot { get; set; }
 
         public DeleteSlotModel(ILogger<IndexModel> logger, AppointmentService service)
         {

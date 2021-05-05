@@ -22,7 +22,7 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
         public YearMonth PrevMonth { get; set; }
         public YearMonth NextMonth { get; set; }
 
-        public DailyAppointment? Appointments { get; set; }
+        public AppointmentsForDay? Appointments { get; set; }
 
         public IndexModel(ILogger<IndexModel> logger, AppointmentService service)
         {

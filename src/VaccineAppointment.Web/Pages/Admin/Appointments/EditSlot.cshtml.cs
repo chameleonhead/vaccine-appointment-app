@@ -26,7 +26,7 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
         public YearMonth PrevMonth { get; set; }
         public YearMonth NextMonth { get; set; }
 
-        public AppointmentSlot? Slot { get; set; }
+        public AppointmentsForSlot? Slot { get; set; }
         public string? ErrorMessage { get; private set; }
 
         [BindProperty]
@@ -35,7 +35,7 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
 
         [BindProperty]
         [Required]
-        public string? EndTime { get; set; }
+        public int? DurationMinutes { get; set; }
 
         [BindProperty]
         [Required]
@@ -63,7 +63,7 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
             }
 
             StartTime = LocalTimePattern.Create("HH:mm", CultureInfo.CurrentCulture).Format(Slot!.From.TimeOfDay);
-            EndTime = LocalTimePattern.Create("HH:mm", CultureInfo.CurrentCulture).Format(Slot!.To.TimeOfDay);
+            DurationMinutes = (int)Slot!.Duration.ToDuration().TotalMinutes;
             CountOfSlot = Slot!.CountOfSlot;
 
             return Page();
@@ -80,8 +80,7 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
                 return Page();
             }
             var startTime = LocalTimePattern.Create("HH:mm", CultureInfo.CurrentCulture).Parse(StartTime!);
-            var endTime = LocalTimePattern.Create("HH:mm", CultureInfo.CurrentCulture).Parse(EndTime!);
-            if (!startTime.Success || !endTime.Success)
+            if (!startTime.Success)
             {
                 ErrorMessage = "ì¸óÕÇ…åÎÇËÇ™Ç†ÇËÇ‹Ç∑ÅB";
                 SetMonth(new YearMonth(year, month));
@@ -91,7 +90,7 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
             }
 
             var date = new LocalDate(year, month, day);
-            var result = await _service.UpdateAppointmentSlotAsync(id, date.At(startTime.Value), date.At(endTime.Value), CountOfSlot!.Value);
+            var result = await _service.UpdateAppointmentSlotAsync(id, date.At(startTime.Value), Period.FromMinutes(DurationMinutes!.Value), CountOfSlot!.Value);
             if (!result.Succeeded)
             {
                 ErrorMessage = result.ErrorMessage;

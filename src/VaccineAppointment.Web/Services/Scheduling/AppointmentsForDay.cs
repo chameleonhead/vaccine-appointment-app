@@ -1,12 +1,11 @@
 ﻿using NodaTime;
 using System.Collections.Generic;
-using VaccineAppointment.Web.Models.Scheduling;
 
 namespace VaccineAppointment.Web.Services.Scheduling
 {
-    public class DailyAppointment
+    public class AppointmentsForDay
     {
-        public DailyAppointment(LocalDate date, bool prevDateAvailable, bool nextDateAvailable, List<AppointmentSlot> slots)
+        public AppointmentsForDay(LocalDate date, bool prevDateAvailable, bool nextDateAvailable, List<AppointmentsForSlot> slots)
         {
             PrevDateAvailable = prevDateAvailable;
             NextDateAvailable = nextDateAvailable;
@@ -17,6 +16,6 @@ namespace VaccineAppointment.Web.Services.Scheduling
         public LocalDate Date { get; }
         public bool PrevDateAvailable { get; set; }
         public bool NextDateAvailable { get; set; }
-        public List<AppointmentSlot> AvailableSlots { get; }
+        public List<AppointmentsForSlot> AvailableSlots { get; }
     }
 }

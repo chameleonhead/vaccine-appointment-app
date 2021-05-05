@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NodaTime;
+using System;
 
 namespace VaccineAppointment.Web.Models.Scheduling
 {
@@ -7,7 +8,7 @@ namespace VaccineAppointment.Web.Models.Scheduling
         public Appointment()
         {
             Id = Guid.NewGuid().ToString();
-            Slot = new AppointmentSlot();
+            Duration = Period.Zero;
             Name = "Unknown";
             Email = "mail@example.com";
             Sex = "F";
@@ -15,7 +16,9 @@ namespace VaccineAppointment.Web.Models.Scheduling
         }
 
         public string Id { get; set; }
-        public AppointmentSlot Slot { get; set; }
+        public LocalDateTime From { get; set; }
+        public Period Duration { get; set; }
+        public LocalDateTime To => From.Plus(Duration);
         public string Name { get; set; }
         public string Email { get; set; }
         public string Sex { get; set; }

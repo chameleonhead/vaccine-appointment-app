@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace VaccineAppointment.Web.Services.Scheduling
 {
-    public class MonthlyAppointment
+    public class AppointmentsForMonth
     {
-        public MonthlyAppointment(YearMonth month, bool prevMonthAvailable, bool nextMonthAvailable, List<DailyAppointment> appointments)
+        public AppointmentsForMonth(YearMonth month, bool prevMonthAvailable, bool nextMonthAvailable, List<AppointmentsForDay> appointments)
         {
             PrevMonthAvailable = prevMonthAvailable;
             NextMonthAvailable = nextMonthAvailable;
@@ -16,6 +16,6 @@ namespace VaccineAppointment.Web.Services.Scheduling
         public YearMonth Month { get; set; }
         public bool PrevMonthAvailable { get; set; }
         public bool NextMonthAvailable { get; set; }
-        public List<DailyAppointment> Appointments { get; }
+        public List<AppointmentsForDay> Appointments { get; }
     }
 }

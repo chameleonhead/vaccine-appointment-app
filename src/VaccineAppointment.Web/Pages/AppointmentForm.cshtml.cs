@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using VaccineAppointment.Web.Models.Scheduling;
 using VaccineAppointment.Web.Services.Scheduling;
 
 namespace VaccineAppointment.Web.Pages
@@ -14,7 +13,7 @@ namespace VaccineAppointment.Web.Pages
         private readonly AppointmentService _service;
         private readonly ILogger<IndexModel> _logger;
 
-        public AppointmentSlot? AppointmentSlot { get; set; }
+        public AppointmentsForSlot? AppointmentSlot { get; set; }
         public string? ErrorMessage { get; set; }
 
         [BindProperty]
@@ -49,7 +48,7 @@ namespace VaccineAppointment.Web.Pages
                 return Page();
             }
             var result = await _service.MakeAppointmentAsync(id, Name!, Email!, Sex!, Age!.Value);
-            return RedirectToPage("ThankYou", new { Id = result.AppointmentId });
+            return RedirectToPage("ThankYou", new { SlotId = id, Id = result.AppointmentId });
         }
     }
 }

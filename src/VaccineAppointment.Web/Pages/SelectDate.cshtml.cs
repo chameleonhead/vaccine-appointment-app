@@ -19,7 +19,7 @@ namespace VaccineAppointment.Web.Pages
         public LocalDate PrevDate { get; set; }
         public LocalDate NextDate { get; set; }
 
-        public DailyAppointment? Appointments { get; set; }
+        public AppointmentsForDay? Appointments { get; set; }
 
         public SelectDateModel(ILogger<IndexModel> logger, AppointmentService service)
         {

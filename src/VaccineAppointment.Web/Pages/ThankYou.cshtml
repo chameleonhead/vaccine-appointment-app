@@ -2,9 +2,9 @@
 @model ThankYouModel
 @{
     ViewData["Title"] = "Home page";
-    var date = Model.Appointment!.Slot!.From;
-    var from = Model.Appointment!.Slot!.From;
-    var to = Model.Appointment!.Slot!.To;
+    var date = Model.Appointment!.From;
+    var from = Model.Appointment!.From;
+    var to = Model.Appointment!.To;
     var name = Model.Appointment!.Name!;
     var email = Model.Appointment!.Email!;
     var sex = Model.Appointment!.Sex!;

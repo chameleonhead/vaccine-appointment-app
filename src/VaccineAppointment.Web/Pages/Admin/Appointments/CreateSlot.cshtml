@@ -42,15 +42,16 @@
                 <input class="form-control" type="time" asp-for="StartTime" />
             </div>
             <div class="form-group">
-                <label>終了時刻</label>
-                <input class="form-control" type="time" asp-for="EndTime" />
+                <label>予約枠の長さ (分)</label>
+                <input class="form-control" type="number" asp-for="DurationMinutes" />
             </div>
             <div class="form-group">
                 <label>受入可能件数</label>
                 <input class="form-control" type="number" asp-for="CountOfSlot" />
             </div>
             <div class="form-group">
-                <button class="btn btn-primary">登録</button>
+                <button class="btn btn-primary mr-2">登録</button>
+                <a class="btn btn-link" asp-page="CreateMultipleSlots" asp-route-year="@selectedDate.Year" asp-route-month="@selectedDate.Month" asp-route-day="@selectedDate.Day">予約枠を一括作成</a>
             </div>
         </form>
     </div>

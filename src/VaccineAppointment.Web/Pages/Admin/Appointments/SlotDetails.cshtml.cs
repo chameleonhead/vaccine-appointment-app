@@ -23,7 +23,7 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
         public YearMonth PrevMonth { get; set; }
         public YearMonth NextMonth { get; set; }
 
-        public AppointmentSlot? Slot { get; set; }
+        public AppointmentsForSlot? Slot { get; set; }
 
         public SlotDetailsModel(ILogger<IndexModel> logger, AppointmentService service)
         {
