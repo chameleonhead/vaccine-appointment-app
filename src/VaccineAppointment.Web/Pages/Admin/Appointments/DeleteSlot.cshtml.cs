@@ -12,18 +12,18 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
     [Authorize]
     public class DeleteSlotModel : PageModel
     {
+        private readonly ILogger<DeleteSlotModel> _logger;
         private readonly AppointmentService _service;
-        private readonly ILogger<IndexModel> _logger;
 
         public LocalDate SelectedDate { get; set; }
         public string? ErrorMessage { get; set; }
 
         public AppointmentAggregate? Slot { get; set; }
 
-        public DeleteSlotModel(ILogger<IndexModel> logger, AppointmentService service)
+        public DeleteSlotModel(ILogger<DeleteSlotModel> logger, AppointmentService service)
         {
-            _service = service;
             _logger = logger;
+            _service = service;
         }
 
         private async Task<IActionResult> PageResult(int year, int month, int day, string id)

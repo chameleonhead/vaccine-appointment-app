@@ -17,13 +17,9 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
     public class CreateMultipleSlotsModel : PageModel
     {
         private readonly AppointmentService _service;
-        private readonly ILogger<IndexModel> _logger;
+        private readonly ILogger<CreateMultipleSlotsModel> _logger;
 
-        public LocalDate Today { get; set; }
-        public YearMonth Month { get; set; }
         public LocalDate SelectedDate { get; set; }
-        public YearMonth PrevMonth { get; set; }
-        public YearMonth NextMonth { get; set; }
 
         public string? ErrorMessage { get; set; }
 
@@ -47,10 +43,10 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
         [Required]
         public int? CountOfSlotsToCreate { get; set; }
 
-        public CreateMultipleSlotsModel(ILogger<IndexModel> logger, AppointmentService service)
+        public CreateMultipleSlotsModel(ILogger<CreateMultipleSlotsModel> logger, AppointmentService service)
         {
-            _service = service;
             _logger = logger;
+            _service = service;
         }
 
         private IActionResult PageResult(int year, int month, int day)

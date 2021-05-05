@@ -12,8 +12,8 @@ namespace VaccineAppointment.Web.Pages
 
     public class SelectDateModel : PageModel
     {
+        private readonly ILogger<SelectDateModel> _logger;
         private readonly AppointmentService _service;
-        private readonly ILogger<IndexModel> _logger;
 
         public LocalDate Date { get; set; }
         public LocalDate PrevDate { get; set; }
@@ -21,7 +21,7 @@ namespace VaccineAppointment.Web.Pages
 
         public AppointmentsForDay? Appointments { get; set; }
 
-        public SelectDateModel(ILogger<IndexModel> logger, AppointmentService service)
+        public SelectDateModel(ILogger<SelectDateModel> logger, AppointmentService service)
         {
             _service = service;
             _logger = logger;

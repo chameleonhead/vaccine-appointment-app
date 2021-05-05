@@ -13,8 +13,8 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
     [Authorize]
     public class IndexModel : PageModel
     {
-        private readonly AppointmentService _service;
         private readonly ILogger<IndexModel> _logger;
+        private readonly AppointmentService _service;
 
         public LocalDate SelectedDate { get; set; }
 
@@ -22,8 +22,8 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
 
         public IndexModel(ILogger<IndexModel> logger, AppointmentService service)
         {
-            _service = service;
             _logger = logger;
+            _service = service;
         }
 
         private async Task<IActionResult> PageResult(int year, int month, int day)

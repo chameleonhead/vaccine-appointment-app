@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace VaccineAppointment.Web.Pages.Admin
     [Authorize]
     public class ChangePasswordModel : PageModel
     {
+        private readonly ILogger<ChangePasswordModel> _logger;
         private readonly UserService _service;
 
         public string? Username { get; set; }
@@ -26,8 +28,9 @@ namespace VaccineAppointment.Web.Pages.Admin
         public string? ErrorMessage { get; set; }
         public string? InfoMessage { get; private set; }
 
-        public ChangePasswordModel(UserService service)
+        public ChangePasswordModel(ILogger<ChangePasswordModel> logger, UserService service)
         {
+            _logger = logger;
             _service = service;
         }
 

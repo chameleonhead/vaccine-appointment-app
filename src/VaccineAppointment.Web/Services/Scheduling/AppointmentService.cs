@@ -1,8 +1,7 @@
 ﻿using NodaTime;
 using NodaTime.Text;
 using NodaTime.TimeZones;
-using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using VaccineAppointment.Web.Models.Scheduling;
 
@@ -10,43 +9,39 @@ namespace VaccineAppointment.Web.Services.Scheduling
 {
     public class AppointmentService
     {
+        private readonly IAppointmentAggregateRepository _repository;
+        private readonly IAppointmentConfigManager _configManager;
+
+        public AppointmentService(IAppointmentAggregateRepository repository, IAppointmentConfigManager configManager)
+        {
+            _repository = repository;
+            _configManager = configManager;
+        }
+
         public async Task<AppointmentsForMonth> SearchAppointmentsByYearMonthAsync(YearMonth yearMonth)
         {
-            var response = new AppointmentsForMonth(yearMonth, new YearMonth(2020, 1) < yearMonth, yearMonth < new YearMonth(2021, 12), new List<AppointmentsForDay>());
-            foreach (var date in yearMonth.ToDateInterval())
+            var interval = yearMonth.ToDateInterval();
+            var aggregates = await _repository.SearchAsync(interval.Start, interval.End);
+            var config = await _configManager.GetConfigAsync();
+
+            var response = new AppointmentsForMonth(yearMonth, config.AvailableIntervalStart.ToYearMonth() <= yearMonth, yearMonth <= config.AvailableIntervalEnd.ToYearMonth());
+            foreach (var date in interval)
             {
-                response.Appointments.Add(await SearchAppointmentsByDateAsync(date));
+                response.Appointments.Add(new AppointmentsForDay(date, config.AvailableIntervalStart <= date, date <= config.AvailableIntervalEnd, aggregates.Where(a => a.From.Date == date).ToList()));
             }
             return response;
         }
 
         public async Task<AppointmentsForDay> SearchAppointmentsByDateAsync(LocalDate date)
         {
-            var response = new AppointmentsForDay(date, new LocalDate(2020, 1, 1) < date, date < new LocalDate(2021, 12, 31), new List<AppointmentAggregate>());
-            if (date.DayOfWeek != IsoDayOfWeek.Sunday)
-            {
-                Func<LocalDateTime, string> patternFactory = dateTime => InstantPattern.ExtendedIso.Format(TzdbDateTimeZoneSource.Default.ForId("Asia/Tokyo").AtStrictly(dateTime).ToInstant());
-                response.AvailableSlots.Add((await FindAppointmentSlotByIdAsync(patternFactory(date.At(new LocalTime(9, 0)))))!);
-                response.AvailableSlots.Add((await FindAppointmentSlotByIdAsync(patternFactory(date.At(new LocalTime(10, 0)))))!);
-            }
-            return response;
+            var aggregates = await _repository.SearchAsync(date, date);
+            var config = await _configManager.GetConfigAsync();
+            return new AppointmentsForDay(date, config.AvailableIntervalStart <= date, date <= config.AvailableIntervalEnd, aggregates.Where(a => a.From.Date == date).ToList());
         }
 
-        public async Task<AppointmentAggregate> FindAppointmentSlotByIdAsync(string appointmentSlotId)
+        public async Task<AppointmentAggregate?> FindAppointmentSlotByIdAsync(string appointmentSlotId)
         {
-            var instant = InstantPattern.ExtendedIso.Parse(appointmentSlotId);
-            var response = new AppointmentAggregate(new AppointmentSlot()
-            {
-                Id = appointmentSlotId,
-                From = instant.Value.WithOffset(TzdbDateTimeZoneSource.Default.ForId("Asia/Tokyo").GetUtcOffset(instant.Value)).LocalDateTime,
-                Duration = Period.FromHours(1),
-                CountOfSlot = 10,
-            });
-            if (response.From.Hour == 10 && response.From.Minute == 0)
-            {
-                response.Appointments.Add((await FindAppointmentByIdAsync(appointmentSlotId))!);
-            }
-            return response;
+            return await _repository.FindBySlotIdAsync(appointmentSlotId);
         }
 
         public async Task<Appointment?> FindAppointmentByIdAsync(string appointmentId)
@@ -82,7 +77,7 @@ namespace VaccineAppointment.Web.Services.Scheduling
         {
             return Task.FromResult(OperationResult.Ok());
         }
-        
+
         public Task<MakeAppointmentResult> CreateAppointmentAsync(string id, string name, string email, string sex, int age)
         {
             return Task.FromResult(MakeAppointmentResult.Ok(id));

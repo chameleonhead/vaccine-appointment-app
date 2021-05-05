@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using VaccineAppointment.Web.Models.Scheduling;
 using VaccineAppointment.Web.Models.Users;
 
 namespace VaccineAppointment.Web.Infrastructure
@@ -12,5 +13,9 @@ namespace VaccineAppointment.Web.Infrastructure
         }
 
         public DbSet<User> Users { get; set; }
+
+        public DbSet<AppointmentSlot> Slots { get; set; }
+        public DbSet<Appointment> Appointments { get; set; }
+        public DbSet<AppointmentConfig> AppointmentConfig { get; set; }
     }
 }

@@ -12,17 +12,17 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
     [Authorize]
     public class AppointmentDetailsModel : PageModel
     {
+        private readonly ILogger<AppointmentDetailsModel> _logger;
         private readonly AppointmentService _service;
-        private readonly ILogger<IndexModel> _logger;
         public LocalDate SelectedDate { get; set; }
 
         public AppointmentAggregate? Slot { get; set; }
         public Appointment? Appointment { get; set; }
 
-        public AppointmentDetailsModel(ILogger<IndexModel> logger, AppointmentService service)
+        public AppointmentDetailsModel(ILogger<AppointmentDetailsModel> logger, AppointmentService service)
         {
-            _service = service;
             _logger = logger;
+            _service = service;
         }
 
         private async Task<IActionResult> PageResult(int year, int month, int day, string slotId, string id)

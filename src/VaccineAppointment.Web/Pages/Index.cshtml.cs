@@ -12,8 +12,8 @@ namespace VaccineAppointment.Web.Pages
 
     public class IndexModel : PageModel
     {
-        private readonly AppointmentService _service;
         private readonly ILogger<IndexModel> _logger;
+        private readonly AppointmentService _service;
 
         public YearMonth Month { get; set; }
         public YearMonth PrevMonth { get; set; }

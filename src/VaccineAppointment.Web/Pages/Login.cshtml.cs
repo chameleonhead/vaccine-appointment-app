@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using VaccineAppointment.Web.Services.Users;
@@ -10,7 +11,9 @@ namespace VaccineAppointment.Web.Pages
 {
     public class LoginModel : PageModel
     {
+        private readonly ILogger<LoginModel> _logger;
         private readonly UserService _service;
+
 
         [BindProperty]
         public string? Username { get; set; }
@@ -20,8 +23,9 @@ namespace VaccineAppointment.Web.Pages
 
         public string? ErrorMessage { get; set; }
 
-        public LoginModel(UserService service)
+        public LoginModel(ILogger<LoginModel> logger, UserService service)
         {
+            _logger = logger;
             _service = service;
         }
 

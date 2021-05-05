@@ -11,8 +11,8 @@ namespace VaccineAppointment.Web.Pages
 
     public class AppointmentFormModel : PageModel
     {
+        private readonly ILogger<AppointmentFormModel> _logger;
         private readonly AppointmentService _service;
-        private readonly ILogger<IndexModel> _logger;
 
         public AppointmentAggregate? AppointmentSlot { get; set; }
         public string? ErrorMessage { get; set; }
@@ -30,7 +30,7 @@ namespace VaccineAppointment.Web.Pages
         [Required]
         public int? Age { get; set; }
 
-        public AppointmentFormModel(ILogger<IndexModel> logger, AppointmentService service)
+        public AppointmentFormModel(ILogger<AppointmentFormModel> logger, AppointmentService service)
         {
             _service = service;
             _logger = logger;

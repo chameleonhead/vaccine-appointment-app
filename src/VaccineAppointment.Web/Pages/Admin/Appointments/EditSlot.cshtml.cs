@@ -15,8 +15,8 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
     [Authorize]
     public class EditSlotModel : PageModel
     {
+        private readonly ILogger<EditSlotModel> _logger;
         private readonly AppointmentService _service;
-        private readonly ILogger<IndexModel> _logger;
 
         public LocalDate SelectedDate { get; set; }
 
@@ -35,10 +35,10 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
         [Required]
         public int? CountOfSlot { get; set; }
 
-        public EditSlotModel(ILogger<IndexModel> logger, AppointmentService service)
+        public EditSlotModel(ILogger<EditSlotModel> logger, AppointmentService service)
         {
-            _service = service;
             _logger = logger;
+            _service = service;
         }
 
         private async Task<IActionResult> PageResult(int year, int month, int day, string id)

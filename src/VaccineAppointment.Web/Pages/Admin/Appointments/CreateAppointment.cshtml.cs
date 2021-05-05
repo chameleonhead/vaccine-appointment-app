@@ -13,8 +13,8 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
     [Authorize]
     public class CreateAppointmentModel : PageModel
     {
+        private readonly ILogger<CreateAppointmentModel> _logger;
         private readonly AppointmentService _service;
-        private readonly ILogger<IndexModel> _logger;
 
         public LocalDate SelectedDate { get; set; }
         public AppointmentAggregate? Slot { get; set; }
@@ -33,16 +33,20 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
         [Required]
         public int? Age { get; set; }
 
-        public CreateAppointmentModel(ILogger<IndexModel> logger, AppointmentService service)
+        public CreateAppointmentModel(ILogger<CreateAppointmentModel> logger, AppointmentService service)
         {
-            _service = service;
             _logger = logger;
+            _service = service;
         }
 
         private async Task<IActionResult> PageResult(int year, int month, int day, string id)
         {
             SelectedDate = new LocalDate(year, month, day);
             Slot = await _service.FindAppointmentSlotByIdAsync(id);
+            if (Slot == null)
+            {
+                return RedirectToPage("Index", new { year, month, day });
+            }
             return Page();
         }
 
