@@ -1,4 +1,5 @@
 ﻿using NodaTime;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VaccineAppointment.Web.Models.Scheduling;
@@ -47,24 +48,42 @@ namespace VaccineAppointment.Web.Services.Scheduling
             return await _repository.FindByAppointmentIdAsync(appointmentId);
         }
 
-        public Task<OperationResult> CreateMultipleAppointmentSlotsAsync(LocalDateTime localDateTime, Period duration, int countOfSlot, int repeatCount)
+        public async Task<OperationResult> CreateMultipleAppointmentSlotsAsync(LocalDateTime from, Period duration, int countOfSlot, int repeatCount)
         {
-            return Task.FromResult(OperationResult.Ok());
+            var aggregatesByDate = new Dictionary<LocalDate, AppointmentsForDay>();
+            var aggregatesToCreate = new List<AppointmentAggregate>();
+            var to = from + Period.FromTicks(duration.ToDuration().ToTimeSpan().Ticks * repeatCount);
+            for (var d = from; d < to; d += duration)
+            {
+                if (!aggregatesByDate.TryGetValue(d.Date, out var aggregates))
+                {
+                    aggregates = await SearchAppointmentsByDateAsync(d.Date);
+                    aggregatesByDate.Add(d.Date, aggregates);
+                }
+                if (aggregates.AvailableSlots.Any(s => s.IsOverlap(d, duration)))
+                {
+                    return OperationResult.Fail("予約枠が重複しています。");
+                }
+                aggregatesToCreate.Add(new AppointmentAggregate(d, duration, countOfSlot));
+            }
+
+            await _repository.AddRangeAsync(aggregatesToCreate);
+            return OperationResult.Ok();
         }
 
-        public async Task<OperationResult> CreateAppointmentSlotAsync(LocalDateTime startTime, Period duration, int countOfSlot)
+        public async Task<OperationResult> CreateAppointmentSlotAsync(LocalDateTime from, Period duration, int countOfSlot)
         {
-            var aggregates = await SearchAppointmentsByDateAsync(startTime.Date);
-            if (aggregates.AvailableSlots.Any(s => s.IsOverlap(startTime, duration)))
+            var aggregates = await SearchAppointmentsByDateAsync(from.Date);
+            if (aggregates.AvailableSlots.Any(s => s.IsOverlap(from, duration)))
             {
                 return OperationResult.Fail("予約枠が重複しています。");
             }
-            var aggregate = new AppointmentAggregate(startTime, duration, countOfSlot);
+            var aggregate = new AppointmentAggregate(from, duration, countOfSlot);
             await _repository.AddAsync(aggregate);
             return CreateAppointmentSlotResult.Ok(aggregate.Id);
         }
 
-        public async Task<OperationResult> UpdateAppointmentSlotAsync(string id, LocalDateTime startTime, Period duration, int countOfSlot)
+        public async Task<OperationResult> UpdateAppointmentSlotAsync(string id, LocalDateTime from, Period duration, int countOfSlot)
         {
             var aggregate = await FindAppointmentSlotByIdAsync(id);
             if (aggregate == null)
@@ -75,12 +94,12 @@ namespace VaccineAppointment.Web.Services.Scheduling
             {
                 return OperationResult.Fail("予約枠に予約があるため更新できません。");
             }
-            var aggregates = await SearchAppointmentsByDateAsync(startTime.Date);
-            if (aggregates.AvailableSlots.Where(s => s.Id != id).Any(s => s.IsOverlap(startTime, duration)))
+            var aggregates = await SearchAppointmentsByDateAsync(from.Date);
+            if (aggregates.AvailableSlots.Where(s => s.Id != id).Any(s => s.IsOverlap(from, duration)))
             {
                 return OperationResult.Fail("予約枠が重複しています。");
             }
-            aggregate.EditSlot(startTime, duration, countOfSlot);
+            aggregate.EditSlot(from, duration, countOfSlot);
             await _repository.UpdateAsync(aggregate);
             return OperationResult.Ok();
         }

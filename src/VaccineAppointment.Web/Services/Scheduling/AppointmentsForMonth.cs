@@ -20,8 +20,8 @@ namespace VaccineAppointment.Web.Services.Scheduling
             {
                 return false;
             }
-            return Appointments.FirstOrDefault(a => a.Date == date).AvailableSlots.Any(s => s.RemainingSlots > 0);
-        } 
+            return Appointments.First(a => a.Date == date).AvailableSlots.Any(s => s.RemainingSlots > 0);
+        }
 
         public YearMonth Month { get; set; }
         public bool PrevMonthAvailable { get; set; }

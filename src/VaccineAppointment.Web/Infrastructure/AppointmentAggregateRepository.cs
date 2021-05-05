@@ -81,5 +81,14 @@ namespace VaccineAppointment.Web.Infrastructure
             }
             await trans.CommitAsync();
         }
+
+        public async Task AddRangeAsync(List<AppointmentAggregate> aggregates)
+        {
+            using var trans = await db.Database.BeginTransactionAsync();
+            await db.Slots.AddRangeAsync(aggregates.Select(a => a.Slot));
+            await db.Appointments.AddRangeAsync(aggregates.SelectMany(a => a.Appointments));
+            await db.SaveChangesAsync();
+            await trans.CommitAsync();
+        }
     }
 }

@@ -456,5 +456,23 @@ namespace VaccineAppointment.Web.Tests.Endpoints
             Assert.IsFalse(result.Succeeded);
             Assert.AreEqual("—\–ñ˜g‚É—\–ñ‚ª‚ ‚é‚½‚ßíœ‚Å‚«‚Ü‚¹‚ñB", result.ErrorMessage);
         }
+
+        [TestMethod]
+        public async Task CreateMultipleAppointmentSlotsAsync_should_return_ok()
+        {
+            var result = await sut!.CreateMultipleAppointmentSlotsAsync(new LocalDateTime(2021, 5, 1, 10, 0), Period.FromHours(1), 1, 2);
+            Assert.IsTrue(result.Succeeded);
+
+            var slots = await db!.Slots.OrderBy(d => d.From).ToListAsync();
+            var slot1 = slots.First();
+            Assert.AreEqual(new LocalDateTime(2021, 5, 1, 10, 0), slot1.From);
+            Assert.AreEqual(Period.FromHours(1), slot1.Duration);
+            Assert.AreEqual(1, slot1.CountOfSlot);
+
+            var slot2 = slots.Last();
+            Assert.AreEqual(new LocalDateTime(2021, 5, 1, 11, 0), slot2.From);
+            Assert.AreEqual(Period.FromHours(1), slot2.Duration);
+            Assert.AreEqual(1, slot2.CountOfSlot);
+        }
     }
 }
