@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using System;
+using VaccineAppointment.Web.Services.Users;
 
-namespace VaccineAppointment.Web.Authentication
+namespace VaccineAppointment.Web.Infrastructure
 {
-    public class PasswordHasher
+    public class PasswordHasher : IPasswordHasher
     {
         private readonly string salt;
 

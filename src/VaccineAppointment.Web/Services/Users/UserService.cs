@@ -1,36 +1,49 @@
 ﻿using System.Threading.Tasks;
-using VaccineAppointment.Web.Authentication;
 using VaccineAppointment.Web.Models.Users;
 
 namespace VaccineAppointment.Web.Services.Users
 {
     public class UserService
     {
-        private readonly PasswordHasher _passwordHasher;
+        private readonly IUserRepository _repository;
+        private readonly IPasswordHasher _passwordHasher;
 
-        public UserService(PasswordHasher passwordHasher)
+        public UserService(IUserRepository repository, IPasswordHasher passwordHasher)
         {
+            _repository = repository;
             _passwordHasher = passwordHasher;
         }
 
-        public Task<User?> FindByUsernameAsync(string username)
+        public async Task<User?> FindByUsernameAsync(string username)
         {
-            if (username.ToLowerInvariant() == "admin")
-            {
-                return Task.FromResult((User?)new User()
-                {
-                    Username = "admin",
-                    Password = _passwordHasher.Hash("P@ssw0rd"),
-                    Role = "Administrator",
-                });
-
-            }
-            return Task.FromResult((User?)null);
+            return await _repository.FindByUsernameAsync(username);
         }
 
-        public Task<OperationResult> ChangePasswordAsync(string username, string newPassword)
+        public async Task<OperationResult> ChangePasswordAsync(string username, string newPassword)
         {
-            return Task.FromResult(OperationResult.Ok());
+            var user = await FindByUsernameAsync(username);
+            if (user is null)
+            {
+                return OperationResult.Fail("ユーザーが存在しません。");
+            }
+            user.ChangePassword(_passwordHasher.Hash(newPassword));
+            await _repository.UpdateAsync(user);
+            return OperationResult.Ok();
+        }
+
+        public async Task<OperationResult> ValidateUsernameAndPasswordAsync(string username, string password)
+        {
+
+            var user = await FindByUsernameAsync(username);
+            if (user is null)
+            {
+                return OperationResult.Fail("ユーザー名またはパスワードが違います。");
+            }
+            if (user.Password != _passwordHasher.Hash(password))
+            {
+                return OperationResult.Fail("ユーザー名またはパスワードが違います。");
+            }
+            return ValidateUsernameAndPasswordResult.Ok(user);
         }
     }
 }

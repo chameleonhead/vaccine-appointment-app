@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using VaccineAppointment.Web.Authentication;
 using VaccineAppointment.Web.Services.Users;
 
 namespace VaccineAppointment.Web.Pages.Admin
@@ -13,7 +12,6 @@ namespace VaccineAppointment.Web.Pages.Admin
     public class ChangePasswordModel : PageModel
     {
         private readonly UserService _service;
-        private readonly PasswordHasher _passwordHasher;
 
         public string? Username { get; set; }
 
@@ -28,10 +26,9 @@ namespace VaccineAppointment.Web.Pages.Admin
         public string? ErrorMessage { get; set; }
         public string? InfoMessage { get; private set; }
 
-        public ChangePasswordModel(UserService service, PasswordHasher passwordHasher)
+        public ChangePasswordModel(UserService service)
         {
             _service = service;
-            _passwordHasher = passwordHasher;
         }
 
         public void OnGet()
@@ -60,7 +57,7 @@ namespace VaccineAppointment.Web.Pages.Admin
                 throw new InvalidOperationException("User not found.");
             }
 
-            var result = await _service.ChangePasswordAsync(Username, _passwordHasher.Hash(NewPassword!));
+            var result = await _service.ChangePasswordAsync(Username, NewPassword!);
             if (!result.Succeeded)
             {
                 ErrorMessage = result.ErrorMessage;
