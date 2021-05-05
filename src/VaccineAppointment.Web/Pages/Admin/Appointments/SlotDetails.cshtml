@@ -38,8 +38,8 @@
         <div class="d-flex justify-content-between">
             <h3 class="mb-1">予約枠 @slot.From.TimeOfDay - @slot.To.TimeOfDay</h3>
             <div class="d-flex align-items-center">
-                <a class="btn btn-sm btn-outline-danger mr-2" asp-page="DeleteSlot" asp-route-year="@selectedDate.Year" asp-route-month="@selectedDate.Month" asp-route-day="@selectedDate.Day" asp-route-id="@slot.Id">削除</a>
-                <a class="btn btn-sm btn-outline-primary" asp-page="EditSlot" asp-route-year="@selectedDate.Year" asp-route-month="@selectedDate.Month" asp-route-day="@selectedDate.Day" asp-route-id="@slot.Id">編集</a>
+                <a class="btn btn-sm btn-outline-danger @(slot.CanDelete ? "" : "disabled") mr-2" asp-page="DeleteSlot" asp-route-year="@selectedDate.Year" asp-route-month="@selectedDate.Month" asp-route-day="@selectedDate.Day" asp-route-id="@slot.Id">削除</a>
+                <a class="btn btn-sm btn-outline-primary @(slot.CanUpdate ? "" : "disabled")" asp-page="EditSlot" asp-route-year="@selectedDate.Year" asp-route-month="@selectedDate.Month" asp-route-day="@selectedDate.Day" asp-route-id="@slot.Id">編集</a>
             </div>
         </div>
         <h5 class="font-weight-bold">詳細</h5>
@@ -58,7 +58,7 @@
             <div class="list-group">
                 @foreach (var appointment in slot.Appointments)
                 {
-                    <a class="list-group-item list-group-item-action" asp-page="Appointment" asp-route-id="@slot.Id">
+                    <a class="list-group-item list-group-item-action" asp-page="AppointmentDetails" asp-route-year="@selectedDate.Year" asp-route-month="@selectedDate.Month" asp-route-day="@selectedDate.Day" asp-route-slotId="@slot.Id" asp-route-id="@appointment.Id">
                         <div class="d-flex w-100 justify-content-between">
                             <h5 class="mb-1">@appointment.Name</h5>
                         </div>

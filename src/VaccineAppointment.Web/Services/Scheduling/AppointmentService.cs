@@ -79,6 +79,11 @@ namespace VaccineAppointment.Web.Services.Scheduling
             return Task.FromResult(OperationResult.Ok());
         }
 
+        public Task<OperationResult> DeleteAppointmentSlotAsync(string id)
+        {
+            return Task.FromResult(OperationResult.Ok());
+        }
+
         public Task<MakeAppointmentResult> MakeAppointmentAsync(string id, string name, string email, string sex, int age)
         {
             return Task.FromResult(MakeAppointmentResult.Ok(id));

@@ -6,12 +6,13 @@ using NodaTime;
 using NodaTime.TimeZones;
 using System;
 using System.Threading.Tasks;
+using VaccineAppointment.Web.Models.Scheduling;
 using VaccineAppointment.Web.Services.Scheduling;
 
 namespace VaccineAppointment.Web.Pages.Admin.Appointments
 {
     [Authorize]
-    public class SlotDetailsModel : PageModel
+    public class AppointmentDetailsModel : PageModel
     {
         private readonly AppointmentService _service;
         private readonly ILogger<IndexModel> _logger;
@@ -23,14 +24,15 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
         public YearMonth NextMonth { get; set; }
 
         public AppointmentsForSlot? Slot { get; set; }
+        public Appointment? Appointment { get; set; }
 
-        public SlotDetailsModel(ILogger<IndexModel> logger, AppointmentService service)
+        public AppointmentDetailsModel(ILogger<IndexModel> logger, AppointmentService service)
         {
             _service = service;
             _logger = logger;
         }
 
-        public async Task<IActionResult> OnGet([FromQuery] int year, [FromQuery] int month, [FromQuery] int day, [FromQuery] string id)
+        public async Task<IActionResult> OnGet([FromQuery] int year, [FromQuery] int month, [FromQuery] int day, [FromQuery] string slotId, [FromQuery] string id)
         {
             Today = TzdbDateTimeZoneSource.Default.ForId("Asia/Tokyo").AtStrictly(LocalDateTime.FromDateTime(DateTime.UtcNow)).Date;
             if (!ModelState.IsValid)
@@ -39,7 +41,8 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
             }
             SetMonth(new YearMonth(year, month));
             SetSelectedDate(new LocalDate(year, month, day));
-            Slot = await _service.FindAppointmentSlotByIdAsync(id);
+            Slot = await _service.FindAppointmentSlotByIdAsync(slotId);
+            Appointment = await _service.FindAppointmentByIdAsync(id);
             return Page();
         }
 
