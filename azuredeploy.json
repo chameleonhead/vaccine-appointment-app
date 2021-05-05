@@ -105,22 +105,28 @@
                 "displayName": "[parameters('websiteName')]"
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Web/serverfarms', variables('webserver-name'))]",
-                "[resourceId('Microsoft.Sql/servers', variables('dbserver-name'))]"
+                "[resourceId('Microsoft.Web/serverfarms', variables('webserver-name'))]"
             ],
             "properties": {
                 "name": "[parameters('websiteName')]",
-                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('webserver-name'))]",
-                "siteConfig": {
-                    "appSettings": [
-                        {
-                            "name": "ConnectionStrings:SqlServerConnection",
-                            "value": "[concat('Server=tcp:',reference(variables('dbserver-name')).fullyQualifiedDomainName,',1433;Initial Catalog=',variables('database-name'),';Persist Security Info=False;User ID=',parameters('dbAdminName'),';Password=',parameters('dbAdminPassword'),';MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;')]"
-                        }
-                    ]
-                }
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('webserver-name'))]"
             },
             "resources": [
+                {
+                    "type": "config",
+                    "apiVersion": "2016-08-01",
+                    "name": "connectionstrings",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/sites', parameters('webSiteName'))]",
+                        "[resourceId('Microsoft.Sql/servers', variables('dbserver-name'))]"
+                    ],
+                    "properties": {
+                        "SqlServerConnection": {
+                            "value": "[concat('Server=tcp:',reference(variables('dbserver-name')).fullyQualifiedDomainName,',1433;Initial Catalog=',variables('database-name'),';Persist Security Info=False;User ID=',parameters('dbAdminName'),';Password=',parameters('dbAdminPassword'),';MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;')]",
+                            "type": "SQLAzure"
+                        }
+                    }
+                },
                 {
                     "type": "sourcecontrols",
                     "apiVersion": "2018-11-01",
