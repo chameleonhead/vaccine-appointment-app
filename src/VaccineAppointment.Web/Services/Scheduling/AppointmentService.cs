@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VaccineAppointment.Web.Models.Mailing;
+using VaccineAppointment.Web.Models.Mailing.MessageParams;
 using VaccineAppointment.Web.Models.Scheduling;
+using VaccineAppointment.Web.Services.Mailing;
 
 namespace VaccineAppointment.Web.Services.Scheduling
 {
@@ -10,9 +13,9 @@ namespace VaccineAppointment.Web.Services.Scheduling
     {
         private readonly IAppointmentAggregateRepository _repository;
         private readonly IAppointmentConfigManager _configManager;
-        private readonly IEmailService _emailService;
+        private readonly EmailService _emailService;
 
-        public AppointmentService(IAppointmentAggregateRepository repository, IAppointmentConfigManager configManager, IEmailService emailService)
+        public AppointmentService(IAppointmentAggregateRepository repository, IAppointmentConfigManager configManager, EmailService emailService)
         {
             _repository = repository;
             _configManager = configManager;
@@ -160,22 +163,12 @@ namespace VaccineAppointment.Web.Services.Scheduling
             }
             var appointmentId = aggregate.AddAppointment(name, email, sex, age);
             await _repository.UpdateAsync(aggregate);
-            await _emailService.SendMailAsync(email, "予約が完了しました。", @$"{name}様
-
-当システムをご利用いただき、誠にありがとうございます。
-予約を以下の通り承りました。
-
-予約ID: {appointmentId}
-予約日: {aggregate.From.Date}
-お時間: {aggregate.From.TimeOfDay} - {aggregate.To.TimeOfDay}
-
-当日は所定の時間までにお越しください。
-
-本メールには返信してもお返事が出来ませんのでご了承願います。
-
-----------------------------------
-ワクチン予約Webサイト
-");
+            await _emailService.SendMailAsync(new EmailMessageParams()
+            {
+                TemplateName = "AppointmentAcceptedMessage",
+                To = email,
+                Params = new AppointmentAcceptedMessageParams(appointmentId, aggregate.From.Date, aggregate.From.TimeOfDay, aggregate.To.TimeOfDay, name)
+            });
             return MakeAppointmentResult.Ok(appointmentId);
         }
     }

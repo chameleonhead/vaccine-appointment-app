@@ -7,8 +7,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
 using VaccineAppointment.Web.Infrastructure;
+using VaccineAppointment.Web.Models.Mailing;
 using VaccineAppointment.Web.Models.Scheduling;
 using VaccineAppointment.Web.Models.Users;
+using VaccineAppointment.Web.Services.Mailing;
 using VaccineAppointment.Web.Services.Scheduling;
 using VaccineAppointment.Web.Services.Users;
 
@@ -41,9 +43,12 @@ namespace VaccineAppointment.Web
             });
             services.AddSingleton<IPasswordHasher>(new PasswordHasher(Configuration.GetValue<string>("VaccineAppointment.Web:PasswordSalt")));
             services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IEmailSender, EmailSender>();
+            services.AddTransient<IEmailConfigurationManager, EmailConfigurationManager>();
+            services.AddTransient<IEmailTemplateRepository, EmailTemplateRepository>();
             services.AddTransient<IAppointmentAggregateRepository, AppointmentAggregateRepository>();
             services.AddTransient<IAppointmentConfigManager, AppointmentConfigManager>();
-            services.AddTransient<IEmailService, EmailService>(services => new EmailService(Configuration.GetSection("VaccineAppointment.Web:Email").Get<EmailConfiguration>()));
+            services.AddTransient<EmailService>();
             services.AddTransient<AppointmentService>();
             services.AddTransient<UserService>();
         }

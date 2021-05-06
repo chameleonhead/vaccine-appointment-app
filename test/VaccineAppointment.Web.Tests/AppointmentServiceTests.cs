@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VaccineAppointment.Web.Infrastructure;
+using VaccineAppointment.Web.Models.Mailing;
 using VaccineAppointment.Web.Models.Scheduling;
+using VaccineAppointment.Web.Services.Mailing;
 using VaccineAppointment.Web.Services.Scheduling;
 
 namespace VaccineAppointment.Web.Tests.Endpoints
@@ -25,8 +27,8 @@ namespace VaccineAppointment.Web.Tests.Endpoints
             db = Utils.CreateInMemoryContext();
             repository = new AppointmentAggregateRepository(db!);
             configManager = new AppointmentConfigManager(db!);
-            emailService = new EmailService(new EmailConfiguration());
-            sut = new AppointmentService(repository, configManager, emailService);
+            emailService = Utils.CreateMockEmailService();
+            sut = new AppointmentService(repository, configManager, emailService!);
         }
 
         [TestMethod]
