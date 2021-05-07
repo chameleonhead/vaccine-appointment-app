@@ -1,5 +1,5 @@
 ﻿@page
-@model VaccineAppointment.Web.Pages.Admin.Appointments.CreateMultipleSlotsModel
+@model CreateMultipleSlotsModel
 @{
     ViewData["Title"] = "予約管理";
     var month = Model.SelectedDate.ToYearMonth();
@@ -8,8 +8,8 @@
 
 <h1>予約管理</h1>
 
+<partial name="_Navigation" model="@(new NavigationViewModel(selectedDate, "CreateMultipleSlots") { BackPage = "CreateSlot" })" />
 <div class="row">
-    <partial name="_Navigation" model="@(new NavigationViewModel(selectedDate, "CreateMultipleSlots") { BackPage = "CreateSlot" })" />
     <div class="col-lg-4">
         <partial name="_Calendar" model="@(new CalendarViewModel(selectedDate, "CreateMultipleSlots"))" />
     </div>

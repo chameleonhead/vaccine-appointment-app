@@ -1,7 +1,7 @@
 ﻿using NodaTime;
 using System.Collections.Generic;
 
-namespace VaccineAppointment.Web.Pages.Appointments
+namespace VaccineAppointment.Web.Pages.Admin.Appointments
 {
     public class NavigationViewModel
     {

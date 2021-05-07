@@ -9,8 +9,8 @@
 
 <h1>予約管理</h1>
 
+<partial name="_Navigation" model="@(new NavigationViewModel(selectedDate, "Index") { BackPage = "Index", DayNavigationDisabled = true })" />
 <div class="row">
-    <partial name="_Navigation" model="@(new NavigationViewModel(selectedDate, "Index") { BackPage = "Index", DayNavigationDisabled = true })" />
     <div class="col-lg-4">
         <partial name="_Calendar" model="@(new CalendarViewModel(selectedDate, "Index"))" />
     </div>

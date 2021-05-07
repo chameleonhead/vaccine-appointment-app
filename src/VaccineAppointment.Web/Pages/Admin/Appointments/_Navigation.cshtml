@@ -10,55 +10,82 @@
 
     var slotId = Model.SlotId;
 }
-<div class="col-lg-4">
-    <div>
+
+<div class="row no-gutters">
+    <div class="col-auto col-lg-4">
         <a class="btn btn-link pl-0" asp-page="@Model.LinkPage" asp-route-year="@prevMonth.Year" asp-route-month="@prevMonth.Month" asp-route-day="@prevMonth.OnDayOfMonth(1).Day">前の月</a>
         <a class="btn btn-link pl-0" asp-page="@Model.LinkPage" asp-route-year="@nextMonth.Year" asp-route-month="@nextMonth.Month" asp-route-day="@nextMonth.OnDayOfMonth(1).Day">次の月</a>
     </div>
-    <h2>@month.Year 年 @month.Month 月</h2>
+    <div class="ml-auto pl-2 pl-0 col-auto col-lg-8">
+        <div class="d-flex justify-content-between align-items-baseline">
+            @if (Model.DayNavigationDisabled)
+            {
+                <div>
+                    <button class="btn btn-link pl-0 disabled">前の日</button>
+                    <button class="btn btn-link pl-0 disabled">次の日</button>
+                </div>
+            }
+            else
+            {
+                <div>
+                    <a class="btn btn-link pl-0" asp-page="@Model.LinkPage" asp-route-year="@prevDate.Year" asp-route-month="@prevDate.Month" asp-route-day="@prevDate.Day">前の日</a>
+                    <a class="btn btn-link pl-0" asp-page="@Model.LinkPage" asp-route-year="@nextDate.Year" asp-route-month="@nextDate.Month" asp-route-day="@nextDate.Day">次の日</a>
+                </div>
+            }
+            @if (!string.IsNullOrEmpty(Model.BackPage))
+            {
+                <div>
+                    <a class="btn btn-sm btn-outline-secondary" asp-page="@Model.BackPage" asp-route-year="@selectedDate.Year" asp-route-month="@selectedDate.Month" asp-route-day="@selectedDate.Day" asp-route-id="@slotId">戻る</a>
+                </div>
+            }
+        </div>
+    </div>
 </div>
-<div class="col-lg-8">
-    <div class="d-flex justify-content-between align-items-baseline">
-        @if (Model.DayNavigationDisabled)
-        {
-            <div>
-                <button class="btn btn-link pl-0 disabled">前の日</button>
-                <button class="btn btn-link pl-0 disabled">次の日</button>
-            </div>
-        }
-        else
-        {
-            <div>
-                <a class="btn btn-link pl-0" asp-page="@Model.LinkPage" asp-route-year="@prevDate.Year" asp-route-month="@prevDate.Month" asp-route-day="@prevDate.Day">前の日</a>
-                <a class="btn btn-link pl-0" asp-page="@Model.LinkPage" asp-route-year="@nextDate.Year" asp-route-month="@nextDate.Month" asp-route-day="@nextDate.Day">次の日</a>
-            </div>
-        }
-        @if (!string.IsNullOrEmpty(Model.BackPage))
-        {
-            <div>
-                <a class="btn btn-sm btn-outline-secondary" asp-page="@Model.BackPage" asp-route-year="@selectedDate.Year" asp-route-month="@selectedDate.Month" asp-route-day="@selectedDate.Day" asp-route-id="@slotId">戻る</a>
-            </div>
-        }
+<div class="row no-gutters">
+    <div class="col-auto col-lg-4">
+        <h3>@month.Year 年 @month.Month 月</h3>
     </div>
-    <div class="d-flex justify-content-between align-items-baseline">
-        <h2>@Model.SelectedDate.Day 日 @NodaTime.Text.LocalDatePattern.Create("dddd", System.Globalization.CultureInfo.GetCultureInfo("ja-JP")).Format(Model.SelectedDate)</h2>
-        @if (Model.CommandLinks.Any())
-        {
-            <div class="row">
-                @foreach (var link in Model.CommandLinks)
-                {
-                    <div class="col-auto">
-                        @if (link.Disabled)
-                        {
-                            <button class="btn btn-link pl-0 disabled">@link.Title</button>
-                        }
-                        else
-                        {
-                            <a class="btn btn-sm btn-outline-@link.Color" href="@link.Href">@link.Title</a>
-                        }
-                    </div>
-                }
-            </div>
-        }
+    <div class="pl-2 pl-0 col col-lg-8">
+        <div class="d-flex justify-content-between">
+            <h3>@Model.SelectedDate.Day 日 <span class="d-none d-md-inline">@NodaTime.Text.LocalDatePattern.Create("dddd", System.Globalization.CultureInfo.GetCultureInfo("ja-JP")).Format(Model.SelectedDate)</span> <span class="d-md-none">(@NodaTime.Text.LocalDatePattern.Create("ddd", System.Globalization.CultureInfo.GetCultureInfo("ja-JP")).Format(Model.SelectedDate))</span></h3>
+            @if (Model.CommandLinks.Any())
+            {
+                <div class="row mb-2 d-none d-md-block">
+                    @foreach (var link in Model.CommandLinks)
+                    {
+                        <div class="col-auto">
+                            @if (link.Disabled)
+                            {
+                                <button class="btn btn-link pl-0 disabled">@link.Title</button>
+                            }
+                            else
+                            {
+                                <a class="btn btn-sm btn-outline-@link.Color" href="@link.Href">@link.Title</a>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+        </div>
     </div>
+</div>
+<div class="d-md-none">
+    @if (Model.CommandLinks.Any())
+    {
+        <div class="row mb-2">
+            @foreach (var link in Model.CommandLinks)
+            {
+                <div class="col-auto">
+                    @if (link.Disabled)
+                    {
+                        <button class="btn btn-link pl-0 disabled">@link.Title</button>
+                    }
+                    else
+                    {
+                        <a class="btn btn-sm btn-outline-@link.Color" href="@link.Href">@link.Title</a>
+                    }
+                </div>
+            }
+        </div>
+    }
 </div>

@@ -8,8 +8,8 @@
 
 <h1>予約管理</h1>
 
+<partial name="_Navigation" model="@(new NavigationViewModel(selectedDate, "Index", new NavigationLink(Url.Page("CreateSlot", new { year = selectedDate.Year, month = selectedDate.Month, day = selectedDate.Day }), "新規予約枠作成", "secondary")))" />
 <div class="row">
-    <partial name="_Navigation" model="@(new NavigationViewModel(selectedDate, "Index", new NavigationLink(Url.Page("CreateSlot", new { year = selectedDate.Year, month = selectedDate.Month, day = selectedDate.Day }), "新規予約枠作成", "secondary")))" />
     <div class="col-lg-4">
         <partial name="_Calendar" model="@(new CalendarViewModel(selectedDate, "Index"))" />
     </div>

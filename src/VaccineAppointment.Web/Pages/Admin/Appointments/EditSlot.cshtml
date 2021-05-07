@@ -1,5 +1,5 @@
 ﻿@page
-@model VaccineAppointment.Web.Pages.Admin.Appointments.EditSlotModel
+@model EditSlotModel
 @{
     ViewData["Title"] = "予約管理";
     var selectedDate = Model.SelectedDate;
@@ -9,8 +9,8 @@
 
 <h1>予約管理</h1>
 
+<partial name="_Navigation" model="@(new NavigationViewModel(selectedDate, "Index") { BackPage = "SlotDetails", SlotId = slot.Id, DayNavigationDisabled = true })" />
 <div class="row">
-    <partial name="_Navigation" model="@(new NavigationViewModel(selectedDate, "Index") { BackPage = "SlotDetails", SlotId = slot.Id, DayNavigationDisabled = true })" />
     <div class="col-lg-4">
         <partial name="_Calendar" model="@(new CalendarViewModel(selectedDate, "Index"))" />
     </div>
