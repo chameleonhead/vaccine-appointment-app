@@ -13,7 +13,8 @@ namespace VaccineAppointment.Web.Services.Scheduling
             NextDateAvailable = config.AvailableIntervalEnd == null || date < config.AvailableIntervalEnd;
             Date = date;
             AllSlots = slots.OrderBy(a => a.From).ToList();
-            if (config == null || (config.AvailableIntervalStart <= date && date <= config.AvailableIntervalEnd))
+            if (((config.AvailableIntervalStart == null || config.AvailableIntervalStart <= date)
+                && (config.AvailableIntervalEnd == null || date <= config.AvailableIntervalEnd)))
             {
                 AvailableSlots = AllSlots.Where(a => a.CanCreateAppointment).ToList();
             }
