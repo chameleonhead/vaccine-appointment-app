@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NodaTime;
 using System;
+using VaccineAppointment.Web.Infrastructure.Models;
 using VaccineAppointment.Web.Models.Scheduling;
 using VaccineAppointment.Web.Models.Users;
 
@@ -19,7 +20,8 @@ namespace VaccineAppointment.Web.Infrastructure
 
         public DbSet<AppointmentSlot> Slots { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
-        public DbSet<AppointmentConfig> AppointmentConfig { get; set; }
+
+        public DbSet<Configuration> Configurations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -55,13 +57,6 @@ namespace VaccineAppointment.Web.Infrastructure
             modelBuilder.Entity<Appointment>()
                 .Property(e => e.Duration)
                 .HasConversion(periodConverter);
-
-            modelBuilder.Entity<AppointmentConfig>()
-                .Property(e => e.AvailableIntervalStart)
-                .HasConversion(localDateConverter);
-            modelBuilder.Entity<AppointmentConfig>()
-                .Property(e => e.AvailableIntervalEnd)
-                .HasConversion(localDateConverter);
         }
     }
 }

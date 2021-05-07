@@ -17,7 +17,7 @@ namespace VaccineAppointment.Web.Tests.Endpoints
     {
         private VaccineAppointmentContext? db;
         private AppointmentAggregateRepository? repository;
-        private AppointmentConfigManager? configManager;
+        private ConfigurationManager? configManager;
         private EmailService? emailService;
         private AppointmentService? sut;
 
@@ -26,7 +26,7 @@ namespace VaccineAppointment.Web.Tests.Endpoints
         {
             db = Utils.CreateInMemoryContext();
             repository = new AppointmentAggregateRepository(db!);
-            configManager = new AppointmentConfigManager(db!);
+            configManager = new ConfigurationManager(db!);
             emailService = Utils.CreateMockEmailService();
             sut = new AppointmentService(repository, configManager, emailService!);
         }
@@ -97,8 +97,7 @@ namespace VaccineAppointment.Web.Tests.Endpoints
                 AvailableIntervalStart = new LocalDate(2021, 5, 5),
                 AvailableIntervalEnd = new LocalDate(2021, 5, 5),
             };
-            db!.AppointmentConfig.Add(config);
-            await db!.SaveChangesAsync();
+            await configManager!.SaveConfigAsync(config);
 
             var aggregatesForDay = await sut!.SearchAppointmentsByDateAsync(new LocalDate(2021, 5, 5));
             Assert.AreEqual(new LocalDate(2021, 5, 5), aggregatesForDay.Date);
@@ -115,8 +114,7 @@ namespace VaccineAppointment.Web.Tests.Endpoints
                 AvailableIntervalStart = new LocalDate(2021, 5, 4),
                 AvailableIntervalEnd = new LocalDate(2021, 5, 5),
             };
-            db!.AppointmentConfig.Add(config);
-            await db!.SaveChangesAsync();
+            await configManager!.SaveConfigAsync(config);
 
             var aggregatesForDay = await sut!.SearchAppointmentsByDateAsync(new LocalDate(2021, 5, 5));
             Assert.AreEqual(new LocalDate(2021, 5, 5), aggregatesForDay.Date);
@@ -133,8 +131,7 @@ namespace VaccineAppointment.Web.Tests.Endpoints
                 AvailableIntervalStart = new LocalDate(2021, 5, 5),
                 AvailableIntervalEnd = new LocalDate(2021, 5, 6),
             };
-            db!.AppointmentConfig.Add(config);
-            await db!.SaveChangesAsync();
+            await configManager!.SaveConfigAsync(config);
 
             var aggregatesForDay = await sut!.SearchAppointmentsByDateAsync(new LocalDate(2021, 5, 5));
             Assert.AreEqual(new LocalDate(2021, 5, 5), aggregatesForDay.Date);
@@ -151,7 +148,7 @@ namespace VaccineAppointment.Web.Tests.Endpoints
                 AvailableIntervalStart = new LocalDate(2021, 5, 5),
                 AvailableIntervalEnd = new LocalDate(2021, 5, 5),
             };
-            db!.AppointmentConfig.Add(config);
+            await configManager!.SaveConfigAsync(config);
 
             var slot = new AppointmentSlot()
             {
@@ -175,7 +172,7 @@ namespace VaccineAppointment.Web.Tests.Endpoints
                 AvailableIntervalStart = new LocalDate(2021, 5, 5),
                 AvailableIntervalEnd = new LocalDate(2021, 5, 5),
             };
-            db!.AppointmentConfig.Add(config);
+            await configManager!.SaveConfigAsync(config);
 
             var slot = new AppointmentSlot()
             {
@@ -221,8 +218,7 @@ namespace VaccineAppointment.Web.Tests.Endpoints
                 AvailableIntervalStart = new LocalDate(2021, 5, 5),
                 AvailableIntervalEnd = new LocalDate(2021, 5, 5),
             };
-            db!.AppointmentConfig.Add(config);
-            await db!.SaveChangesAsync();
+            await configManager!.SaveConfigAsync(config);
 
             var aggregatesForMonth = await sut!.SearchAppointmentsByYearMonthAsync(new YearMonth(2021, 5));
             Assert.AreEqual(new YearMonth(2021, 5), aggregatesForMonth.Month);
@@ -258,8 +254,7 @@ namespace VaccineAppointment.Web.Tests.Endpoints
                 AvailableIntervalStart = new LocalDate(2021, 4, 30),
                 AvailableIntervalEnd = new LocalDate(2021, 5, 5),
             };
-            db!.AppointmentConfig.Add(config);
-            await db!.SaveChangesAsync();
+            await configManager!.SaveConfigAsync(config);
 
             var aggregatesForMonth = await sut!.SearchAppointmentsByYearMonthAsync(new YearMonth(2021, 5));
             Assert.AreEqual(new YearMonth(2021, 5), aggregatesForMonth.Month);
@@ -275,8 +270,7 @@ namespace VaccineAppointment.Web.Tests.Endpoints
                 AvailableIntervalStart = new LocalDate(2021, 5, 1),
                 AvailableIntervalEnd = new LocalDate(2021, 6, 1),
             };
-            db!.AppointmentConfig.Add(config);
-            await db!.SaveChangesAsync();
+            await configManager!.SaveConfigAsync(config);
 
             var aggregatesForMonth = await sut!.SearchAppointmentsByYearMonthAsync(new YearMonth(2021, 5));
             Assert.AreEqual(new YearMonth(2021, 5), aggregatesForMonth.Month);
@@ -287,7 +281,7 @@ namespace VaccineAppointment.Web.Tests.Endpoints
         [TestMethod]
         public async Task SearchAppointmentsByYearMonthAsync_should_return_aggregate_given_slot()
         {
-            db!.AppointmentConfig.Add(new AppointmentConfig()
+            await configManager!.SaveConfigAsync(new AppointmentConfig()
             {
                 AvailableIntervalStart = new LocalDate(2021, 1, 1),
                 AvailableIntervalEnd = new LocalDate(2021, 12, 31),
@@ -310,7 +304,7 @@ namespace VaccineAppointment.Web.Tests.Endpoints
         [TestMethod]
         public async Task SearchAppointmentsByYearMonthAsync_should_return_aggregate_given_slot_and_appointment()
         {
-            db!.AppointmentConfig.Add(new AppointmentConfig()
+            await configManager!.SaveConfigAsync(new AppointmentConfig()
             {
                 AvailableIntervalStart = new LocalDate(2021, 1, 1),
                 AvailableIntervalEnd = new LocalDate(2021, 12, 31),

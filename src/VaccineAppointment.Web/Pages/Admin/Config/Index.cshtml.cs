@@ -5,7 +5,9 @@ using Microsoft.Extensions.Logging;
 using NodaTime;
 using NodaTime.Text;
 using System.Threading.Tasks;
+using VaccineAppointment.Web.Models.Mailing;
 using VaccineAppointment.Web.Models.Scheduling;
+using VaccineAppointment.Web.Services.Mailing;
 
 namespace VaccineAppointment.Web.Pages.Admin.Config
 {
@@ -14,16 +16,35 @@ namespace VaccineAppointment.Web.Pages.Admin.Config
     {
         private readonly ILogger<IndexModel> _logger;
         private readonly IAppointmentConfigManager _appointmentConfigManager;
+        private readonly IEmailConfigManager _emailConfigurationManager;
+        private readonly EmailService _service;
+
+        public string? ErrorMessage { get; private set; }
 
         [BindProperty]
         public string? AvailableIntervalStart { get; set; }
         [BindProperty]
         public string? AvailableIntervalEnd { get; set; }
 
-        public IndexModel(ILogger<IndexModel> logger, IAppointmentConfigManager appointmentConfigManager)
+        [BindProperty]
+        public string? Host { get; set; }
+        [BindProperty]
+        public int? Port { get; set; }
+        [BindProperty]
+        public bool UseSsl { get; set; }
+        [BindProperty]
+        public string? Username { get; set; }
+        [BindProperty]
+        public string? Password { get; set; }
+        [BindProperty]
+        public string? ToAddress { get; set; }
+
+        public IndexModel(ILogger<IndexModel> logger, IAppointmentConfigManager appointmentConfigManager, IEmailConfigManager emailConfigurationManager, EmailService service)
         {
             _logger = logger;
             _appointmentConfigManager = appointmentConfigManager;
+            _emailConfigurationManager = emailConfigurationManager;
+            _service = service;
         }
 
         public async Task<IActionResult> OnGet()
@@ -31,10 +52,16 @@ namespace VaccineAppointment.Web.Pages.Admin.Config
             var appointmentConfig = await _appointmentConfigManager.GetConfigAsync();
             AvailableIntervalStart = FormatDate(appointmentConfig.AvailableIntervalStart);
             AvailableIntervalEnd = FormatDate(appointmentConfig.AvailableIntervalEnd);
+            var emailConfig = await _emailConfigurationManager.GetConfigAsync();
+            Host = emailConfig.Host;
+            Port = emailConfig.Port;
+            UseSsl = emailConfig.UseSsl;
+            Username = emailConfig.Username;
+            Password = emailConfig.Password;
             return Page();
         }
 
-        public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPostAppointmentConfig()
         {
             var appointmentConfig = new AppointmentConfig();
             appointmentConfig.AvailableIntervalStart = ParseDate(AvailableIntervalStart);
@@ -64,6 +91,58 @@ namespace VaccineAppointment.Web.Pages.Admin.Config
                 return LocalDatePattern.Iso.Format(localDate.Value);
             }
             return null;
+        }
+
+        public async Task<IActionResult> OnPostEmailConfig()
+        {
+            if (!string.IsNullOrEmpty(Username) && string.IsNullOrEmpty(Password))
+            {
+                ErrorMessage = "パスワードが入力されていません。";
+                return Page();
+            }
+            var emailConfig = new EmailConfig();
+            emailConfig.Host = Host;
+            emailConfig.Port = Port;
+            emailConfig.UseSsl = UseSsl;
+            emailConfig.Username = Username;
+            emailConfig.Password = Password;
+            await _emailConfigurationManager.SaveConfigAsync(emailConfig);
+            return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnPostTestSendingEmail()
+        {
+            if (string.IsNullOrEmpty(Host) || !Port.HasValue)
+            {
+                ErrorMessage = "設定値が入力されていません。";
+                return Page();
+            }
+            if (!string.IsNullOrEmpty(Username) && string.IsNullOrEmpty(Password))
+            {
+                ErrorMessage = "パスワードが入力されていません。";
+                return Page();
+            }
+            if (string.IsNullOrEmpty(ToAddress))
+            {
+                ErrorMessage = "送信先を指定してください。";
+                return Page();
+            }
+            var emailConfig = new EmailConfig();
+            emailConfig.Host = Host;
+            emailConfig.Port = Port;
+            emailConfig.UseSsl = UseSsl;
+            emailConfig.Username = Username;
+            emailConfig.Password = Password;
+            await _emailConfigurationManager.SaveConfigAsync(emailConfig);
+
+            await _service.SendMailAsync(new EmailMessageParams()
+            {
+                From = ToAddress,
+                To = ToAddress,
+                Subject = "Test",
+                Body = "This is test mail.",
+            });
+            return RedirectToPage();
         }
     }
 }

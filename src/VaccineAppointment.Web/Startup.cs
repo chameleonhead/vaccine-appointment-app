@@ -42,12 +42,12 @@ namespace VaccineAppointment.Web
                 options.UseSqlServer(Configuration.GetConnectionString("SqlServerConnection"));
             });
             services.AddSingleton<IPasswordHasher>(new PasswordHasher(Configuration.GetValue<string>("VaccineAppointment.Web:PasswordSalt")));
+            services.AddTransient<IEmailConfigManager, ConfigurationManager>();
+            services.AddTransient<IAppointmentConfigManager, ConfigurationManager>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IEmailSender, EmailSender>();
-            services.AddTransient<IEmailConfigurationManager, EmailConfigurationManager>();
             services.AddTransient<IEmailTemplateRepository, EmailTemplateRepository>();
             services.AddTransient<IAppointmentAggregateRepository, AppointmentAggregateRepository>();
-            services.AddTransient<IAppointmentConfigManager, AppointmentConfigManager>();
             services.AddTransient<EmailService>();
             services.AddTransient<AppointmentService>();
             services.AddTransient<UserService>();

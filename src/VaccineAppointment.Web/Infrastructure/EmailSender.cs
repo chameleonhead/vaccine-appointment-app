@@ -8,23 +8,23 @@ namespace VaccineAppointment.Web.Infrastructure
 
     public class EmailSender : IEmailSender
     {
-        private readonly IEmailConfigurationManager _configurationManager;
+        private readonly IEmailConfigManager _configurationManager;
 
-        public EmailSender(IEmailConfigurationManager configurationManager)
+        public EmailSender(IEmailConfigManager configurationManager)
         {
             _configurationManager = configurationManager;
         }
 
         public async Task SendMailAsync(EmailMessage message)
         {
-            var configuration = await _configurationManager.GetConfigurationAsync();
+            var configuration = await _configurationManager.GetConfigAsync();
             if (configuration == null)
             {
                 return;
             }
             using (var client = new SmtpClient(configuration.Host, configuration.Port!.Value))
             {
-                client.EnableSsl = true;
+                client.EnableSsl = configuration.UseSsl;
                 if (!string.IsNullOrEmpty(configuration.Username))
                 {
                     client.Credentials = new NetworkCredential(configuration.Username, configuration.Password);
