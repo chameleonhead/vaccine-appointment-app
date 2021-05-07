@@ -30,7 +30,12 @@ namespace VaccineAppointment.Web.Infrastructure
             return db.Users.FirstOrDefaultAsync(u => u.Username == username);
         }
 
-        public async Task AddUserAsync(User user)
+        public Task<User> FindByIdAsync(string id)
+        {
+            return db.Users.FirstOrDefaultAsync(u => u.Id == id);
+        }
+
+        public async Task AddAsync(User user)
         {
             await db.Users.AddAsync(user);
             await db.SaveChangesAsync();
@@ -39,6 +44,13 @@ namespace VaccineAppointment.Web.Infrastructure
         public async Task UpdateAsync(User user)
         {
             db.Users.Update(user);
+            await db.SaveChangesAsync();
+        }
+
+        public async Task RemoveAsync(string id)
+        {
+            var user = await db.Users.FindAsync(id);
+            db.Users.Remove(user);
             await db.SaveChangesAsync();
         }
     }

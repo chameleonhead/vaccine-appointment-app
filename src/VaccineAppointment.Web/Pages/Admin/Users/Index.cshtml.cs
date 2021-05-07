@@ -9,7 +9,7 @@ using VaccineAppointment.Web.Services.Users;
 
 namespace VaccineAppointment.Web.Pages.Admin.Users
 {
-    [Authorize]
+    [Authorize(Roles = "Administrator")]
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;

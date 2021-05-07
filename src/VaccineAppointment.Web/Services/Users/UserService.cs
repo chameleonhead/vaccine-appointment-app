@@ -26,6 +26,11 @@ namespace VaccineAppointment.Web.Services.Users
             return await _repository.FindByUsernameAsync(username);
         }
 
+        public async Task<User> FirstByIdAsync(string id)
+        {
+            return await _repository.FindByIdAsync(id);
+        }
+
         public async Task<OperationResult> ChangePasswordAsync(string username, string newPassword)
         {
             var user = await FindByUsernameAsync(username);
@@ -51,6 +56,40 @@ namespace VaccineAppointment.Web.Services.Users
                 return OperationResult.Fail("ユーザー名またはパスワードが違います。");
             }
             return ValidateUsernameAndPasswordResult.Ok(user);
+        }
+
+        public async Task<OperationResult> DeleteUserAsync(string id)
+        {
+            var user = await _repository.FindByIdAsync(id);
+            if (user is null)
+            {
+                return OperationResult.Fail("ユーザーが見つかりません。");
+            }
+            await _repository.RemoveAsync(id);
+            return OperationResult.Ok();
+        }
+
+        public async Task<OperationResult> CreateAsync(string username, string password, string role)
+        {
+            await _repository.AddAsync(new User(username, password, role));
+            return OperationResult.Ok();
+        }
+
+        public async Task<OperationResult> UpdateAsync(string id, string? password, string role)
+        {
+            var user = await _repository.FindByIdAsync(id);
+            if (user == null)
+            {
+                return OperationResult.Fail("ユーザーが見つかりません。");
+            }
+
+            if (!string.IsNullOrEmpty(password))
+            {
+                user.ChangePassword(_passwordHasher.Hash(password));
+            }
+            user.ChangeRole(role);
+            await _repository.UpdateAsync(user);
+            return OperationResult.Ok();
         }
     }
 }
