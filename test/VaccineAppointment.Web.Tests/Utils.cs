@@ -40,6 +40,11 @@ namespace VaccineAppointment.Web.Tests
             {
                 return Task.FromResult(EmailTemplate.Default);
             }
+
+            public Task SaveAsync(EmailTemplate template)
+            {
+                return Task.CompletedTask;
+            }
         }
     }
 }
