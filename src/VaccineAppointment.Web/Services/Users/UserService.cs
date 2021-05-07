@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using VaccineAppointment.Web.Models.Users;
 
 namespace VaccineAppointment.Web.Services.Users
@@ -12,6 +14,11 @@ namespace VaccineAppointment.Web.Services.Users
         {
             _repository = repository;
             _passwordHasher = passwordHasher;
+        }
+
+        public Task<List<User>> SearchUserAsync(string? username)
+        {
+            return _repository.SearchForAsync(username);
         }
 
         public async Task<User?> FindByUsernameAsync(string username)
