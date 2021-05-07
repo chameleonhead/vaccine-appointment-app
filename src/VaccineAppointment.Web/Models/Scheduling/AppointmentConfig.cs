@@ -11,7 +11,7 @@ namespace VaccineAppointment.Web.Models.Scheduling
         }
 
         public string Id { get; set; }
-        public LocalDate AvailableIntervalStart { get; set; }
-        public LocalDate AvailableIntervalEnd { get; set; }
+        public LocalDate? AvailableIntervalStart { get; set; }
+        public LocalDate? AvailableIntervalEnd { get; set; }
     }
 }

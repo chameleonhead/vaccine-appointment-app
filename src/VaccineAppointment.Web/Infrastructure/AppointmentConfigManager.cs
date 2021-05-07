@@ -13,10 +13,10 @@ namespace VaccineAppointment.Web.Infrastructure
             this.db = db;
         }
 
-        public async Task<AppointmentConfig?> GetConfigAsync()
+        public async Task<AppointmentConfig> GetConfigAsync()
         {
             var config = await db.AppointmentConfig.FirstOrDefaultAsync();
-            return config;
+            return config ?? new AppointmentConfig();
         }
 
         public async Task SaveConfigAsync(AppointmentConfig config)

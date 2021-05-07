@@ -1,0 +1,37 @@
+﻿@page
+@model IndexModel
+
+@{
+    ViewData["Title"] = "設定";
+}
+
+<h1>設定</h1>
+
+<form method="post">
+    <div class="card my-3">
+        <div class="card-body p-3">
+            <h4 class="card-title m-0">予約可能日</h4>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <div class="row align-items-center">
+                    <div class="col-3"><b>開始日</b></div>
+                    <div class="col-9">
+                        <input class="form-control" type="date" asp-for="AvailableIntervalStart" />
+                    </div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="row align-items-center">
+                    <div class="col-3"><b>終了日</b></div>
+                    <div class="col-9">
+                        <input class="form-control" type="date" asp-for="AvailableIntervalEnd" />
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <div class="card-footer bg-white">
+            <button class="btn btn-primary">保存</button>
+        </div>
+    </div>
+</form>

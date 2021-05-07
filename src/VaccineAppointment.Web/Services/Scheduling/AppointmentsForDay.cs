@@ -7,10 +7,10 @@ namespace VaccineAppointment.Web.Services.Scheduling
 {
     public class AppointmentsForDay
     {
-        public AppointmentsForDay(LocalDate date, AppointmentConfig? config, List<AppointmentAggregate> slots)
+        public AppointmentsForDay(LocalDate date, AppointmentConfig config, List<AppointmentAggregate> slots)
         {
-            PrevDateAvailable = config == null || config.AvailableIntervalStart < date;
-            NextDateAvailable = config == null || date < config.AvailableIntervalEnd;
+            PrevDateAvailable = config.AvailableIntervalStart == null || config.AvailableIntervalStart < date;
+            NextDateAvailable = config.AvailableIntervalEnd == null || date < config.AvailableIntervalEnd;
             Date = date;
             AllSlots = slots.OrderBy(a => a.From).ToList();
             if (config == null || (config.AvailableIntervalStart <= date && date <= config.AvailableIntervalEnd))

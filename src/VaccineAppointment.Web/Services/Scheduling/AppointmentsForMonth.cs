@@ -7,10 +7,10 @@ namespace VaccineAppointment.Web.Services.Scheduling
 {
     public class AppointmentsForMonth
     {
-        public AppointmentsForMonth(YearMonth month, AppointmentConfig? config)
+        public AppointmentsForMonth(YearMonth month, AppointmentConfig config)
         {
-            PrevMonthAvailable = config == null || config.AvailableIntervalStart.ToYearMonth() < month;
-            NextMonthAvailable = config == null || month < config.AvailableIntervalEnd.ToYearMonth();
+            PrevMonthAvailable = config.AvailableIntervalStart == null || config.AvailableIntervalStart.Value.ToYearMonth() < month;
+            NextMonthAvailable = config.AvailableIntervalEnd == null || month < config.AvailableIntervalEnd.Value.ToYearMonth();
             Month = month;
         }
 
