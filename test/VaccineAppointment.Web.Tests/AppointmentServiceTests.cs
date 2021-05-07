@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+ï»¿using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NodaTime;
 using System.Collections.Generic;
@@ -347,7 +347,7 @@ namespace VaccineAppointment.Web.Tests.Endpoints
             await sut!.CreateAppointmentSlotAsync(new LocalDateTime(2021, 5, 1, 10, 0), Period.FromHours(1), 1);
             var result = await sut!.CreateAppointmentSlotAsync(new LocalDateTime(2021, 5, 1, 10, 0), Period.FromHours(1), 1);
             Assert.IsFalse(result.Succeeded);
-            Assert.AreEqual("—\–ñ˜g‚ªd•¡‚µ‚Ä‚¢‚Ü‚·B", result.ErrorMessage);
+            Assert.AreEqual("äºˆç´„æ ãŒé‡è¤‡ã—ã¦ã„ã¾ã™ã€‚", result.ErrorMessage);
         }
 
         [TestMethod]
@@ -386,7 +386,7 @@ namespace VaccineAppointment.Web.Tests.Endpoints
         {
             var result = await sut!.UpdateAppointmentSlotAsync("unknownid", new LocalDateTime(2021, 5, 1, 9, 0), Period.FromHours(1), 1);
             Assert.IsFalse(result.Succeeded);
-            Assert.AreEqual("—\–ñ˜g‚ª‘¶İ‚µ‚Ü‚¹‚ñB", result.ErrorMessage);
+            Assert.AreEqual("äºˆç´„æ ãŒå­˜åœ¨ã—ã¾ã›ã‚“ã€‚", result.ErrorMessage);
         }
 
         [TestMethod]
@@ -398,7 +398,7 @@ namespace VaccineAppointment.Web.Tests.Endpoints
 
             var result = await sut!.UpdateAppointmentSlotAsync(id, new LocalDateTime(2021, 5, 1, 9, 0), Period.FromHours(1), 1);
             Assert.IsFalse(result.Succeeded);
-            Assert.AreEqual("—\–ñ˜g‚ªd•¡‚µ‚Ä‚¢‚Ü‚·B", result.ErrorMessage);
+            Assert.AreEqual("äºˆç´„æ ãŒé‡è¤‡ã—ã¦ã„ã¾ã™ã€‚", result.ErrorMessage);
         }
 
         [TestMethod]
@@ -410,7 +410,7 @@ namespace VaccineAppointment.Web.Tests.Endpoints
 
             var result = await sut!.UpdateAppointmentSlotAsync(id, new LocalDateTime(2021, 5, 1, 11, 0), Period.FromHours(1), 1);
             Assert.IsFalse(result.Succeeded);
-            Assert.AreEqual("—\–ñ˜g‚É—\–ñ‚ª‚ ‚é‚½‚ßXV‚Å‚«‚Ü‚¹‚ñB", result.ErrorMessage);
+            Assert.AreEqual("äºˆç´„æ ã«äºˆç´„ãŒã‚ã‚‹ãŸã‚æ›´æ–°ã§ãã¾ã›ã‚“ã€‚", result.ErrorMessage);
         }
 
         [TestMethod]
@@ -441,7 +441,7 @@ namespace VaccineAppointment.Web.Tests.Endpoints
         {
             var result = await sut!.DeleteAppointmentSlotAsync("unknownid");
             Assert.IsFalse(result.Succeeded);
-            Assert.AreEqual("—\–ñ˜g‚ª‘¶İ‚µ‚Ü‚¹‚ñB", result.ErrorMessage);
+            Assert.AreEqual("äºˆç´„æ ãŒå­˜åœ¨ã—ã¾ã›ã‚“ã€‚", result.ErrorMessage);
         }
 
         [TestMethod]
@@ -453,7 +453,7 @@ namespace VaccineAppointment.Web.Tests.Endpoints
 
             var result = await sut!.DeleteAppointmentSlotAsync(id);
             Assert.IsFalse(result.Succeeded);
-            Assert.AreEqual("—\–ñ˜g‚É—\–ñ‚ª‚ ‚é‚½‚ßíœ‚Å‚«‚Ü‚¹‚ñB", result.ErrorMessage);
+            Assert.AreEqual("äºˆç´„æ ã«äºˆç´„ãŒã‚ã‚‹ãŸã‚å‰Šé™¤ã§ãã¾ã›ã‚“ã€‚", result.ErrorMessage);
         }
 
         [TestMethod]

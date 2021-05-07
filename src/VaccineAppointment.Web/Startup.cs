@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
+ï»¿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -80,8 +80,8 @@ namespace VaccineAppointment.Web
                             Id = Guid.NewGuid().ToString(),
                             TemplateName = "AppointmentAcceptedMessage",
                             FromTemplate = "admin@example.com",
-                            SubjectTemplate = "yƒƒNƒ`ƒ“—\–ñWebƒTƒCƒgz‚²—\–ñ‚ ‚è‚ª‚Æ‚¤‚²‚´‚¢‚Ü‚·B",
-                            BodyTemplate = "{{Name}}—l\r\n\r\n“–ƒVƒXƒeƒ€‚ğ‚²—˜—p‚¢‚½‚¾‚«A½‚É‚ ‚è‚ª‚Æ‚¤‚²‚´‚¢‚Ü‚·B\r\n—\–ñ‚ğˆÈ‰º‚Ì’Ê‚è³‚è‚Ü‚µ‚½B\r\n\r\n—\–ñID: {{AppointmentId}}\r\n—\–ñ“ú: {{Date}}\r\n‚¨ŠÔ: {{FromTime}} - {{ToTime}}\r\n\r\n“–“ú‚ÍŠ’è‚ÌŠÔ‚Ü‚Å‚É‚¨‰z‚µ‚­‚¾‚³‚¢B\r\n\r\n–{ƒ[ƒ‹‚É‚Í•ÔM‚µ‚Ä‚à‚¨•Ô–‚ªo—ˆ‚Ü‚¹‚ñ‚Ì‚Å‚²—¹³Šè‚¢‚Ü‚·B\r\n\r\n----------------------------------\r\nƒƒNƒ`ƒ“—\–ñWebƒTƒCƒg\r\n",
+                            SubjectTemplate = "ã€ãƒ¯ã‚¯ãƒãƒ³äºˆç´„Webã‚µã‚¤ãƒˆã€‘ã”äºˆç´„ã‚ã‚ŠãŒã¨ã†ã”ã–ã„ã¾ã™ã€‚",
+                            BodyTemplate = "{{Name}}æ§˜\r\n\r\nå½“ã‚·ã‚¹ãƒ†ãƒ ã‚’ã”åˆ©ç”¨ã„ãŸã ãã€èª ã«ã‚ã‚ŠãŒã¨ã†ã”ã–ã„ã¾ã™ã€‚\r\näºˆç´„ã‚’ä»¥ä¸‹ã®é€šã‚Šæ‰¿ã‚Šã¾ã—ãŸã€‚\r\n\r\näºˆç´„ID: {{AppointmentId}}\r\näºˆç´„æ—¥: {{Date}}\r\nãŠæ™‚é–“: {{FromTime}} - {{ToTime}}\r\n\r\nå½“æ—¥ã¯æ‰€å®šã®æ™‚é–“ã¾ã§ã«ãŠè¶Šã—ãã ã•ã„ã€‚\r\n\r\næœ¬ãƒ¡ãƒ¼ãƒ«ã«ã¯è¿”ä¿¡ã—ã¦ã‚‚ãŠè¿”äº‹ãŒå‡ºæ¥ã¾ã›ã‚“ã®ã§ã”äº†æ‰¿é¡˜ã„ã¾ã™ã€‚\r\n\r\n----------------------------------\r\nãƒ¯ã‚¯ãƒãƒ³äºˆç´„Webã‚µã‚¤ãƒˆ\r\n",
                         });
                         db.SaveChanges();
                     }
