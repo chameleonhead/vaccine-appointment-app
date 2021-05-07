@@ -1,18 +1,41 @@
-﻿using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
+using System.Threading.Tasks;
 using VaccineAppointment.Web.Models.Mailing;
 
 namespace VaccineAppointment.Web.Infrastructure
 {
     public class EmailTemplateRepository : IEmailTemplateRepository
     {
+        private readonly VaccineAppointmentContext db;
+
+        public EmailTemplateRepository(VaccineAppointmentContext db)
+        {
+            this.db = db;
+        }
+
         public Task<EmailTemplate> FindByNameAsync(string templateName)
         {
-            return Task.FromResult(new EmailTemplate()
+            return db.EmailTemplates.FirstOrDefaultAsync(t => t.TemplateName == templateName);
+        }
+
+        public async Task SaveAsync(EmailTemplate template)
+        {
+            var dbTemplate = await FindByNameAsync(template.TemplateName);
+            using var trans = await db.Database.BeginTransactionAsync();
+            if (dbTemplate != null)
             {
-                FromTemplate = "chamelion@hotmail.co.jp",
-                SubjectTemplate = "【ワクチン予約Webサイト】ご予約ありがとうございます。",
-                BodyTemplate = "{{Name}}様\r\n\r\n当システムをご利用いただき、誠にありがとうございます。\r\n予約を以下の通り承りました。\r\n\r\n予約ID: {{AppointmentId}}\r\n予約日: {{Date}}\r\nお時間: {{FromTime}} - {{ToTime}}\r\n\r\n当日は所定の時間までにお越しください。\r\n\r\n本メールには返信してもお返事が出来ませんのでご了承願います。\r\n\r\n----------------------------------\r\nワクチン予約Webサイト\r\n",
-            });
+                template.Id = dbTemplate.Id;
+                db.EmailTemplates.Remove(dbTemplate);
+                await db.SaveChangesAsync();
+            }
+            else
+            {
+                template.Id = Guid.NewGuid().ToString();
+            }
+            await db.EmailTemplates.AddAsync(template);
+            await db.SaveChangesAsync();
+            await trans.CommitAsync();
         }
     }
 }

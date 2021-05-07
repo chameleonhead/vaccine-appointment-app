@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NodaTime;
 using System;
 using VaccineAppointment.Web.Infrastructure.Models;
+using VaccineAppointment.Web.Models.Mailing;
 using VaccineAppointment.Web.Models.Scheduling;
 using VaccineAppointment.Web.Models.Users;
 
@@ -16,12 +17,14 @@ namespace VaccineAppointment.Web.Infrastructure
         {
         }
 
+        public DbSet<Configuration> Configurations { get; set; }
+
         public DbSet<User> Users { get; set; }
 
         public DbSet<AppointmentSlot> Slots { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
 
-        public DbSet<Configuration> Configurations { get; set; }
+        public DbSet<EmailTemplate> EmailTemplates { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

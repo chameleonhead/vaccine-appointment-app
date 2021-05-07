@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using VaccineAppointment.Web.Models.Mailing;
 
 namespace VaccineAppointment.Web.Services.Mailing
@@ -26,6 +27,16 @@ namespace VaccineAppointment.Web.Services.Mailing
                 messageTemplate = await _templateRepository.FindByNameAsync(param.TemplateName);
             }
             await _emailSender.SendMailAsync(messageTemplate.CreateMessage(param));
+        }
+
+        public Task<EmailTemplate> FindTempalateByNameAsync(string templateName)
+        {
+            return _templateRepository.FindByNameAsync(templateName);
+        }
+
+        public Task SaveTemplateAsync(EmailTemplate template)
+        {
+            return _templateRepository.SaveAsync(template);
         }
     }
 }

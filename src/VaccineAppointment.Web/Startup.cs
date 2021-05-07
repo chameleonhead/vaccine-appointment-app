@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 using System.Linq;
 using VaccineAppointment.Web.Infrastructure;
 using VaccineAppointment.Web.Models.Mailing;
@@ -69,6 +70,18 @@ namespace VaccineAppointment.Web
                             Username = "admin",
                             Password = hasher.Hash("P@ssw0rd"),
                             Role = "Administrator",
+                        });
+                        db.SaveChanges();
+                    }
+                    if (!db.EmailTemplates.Any())
+                    {
+                        db.EmailTemplates.Add(new EmailTemplate()
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            TemplateName = "AppointmentAcceptedMessage",
+                            FromTemplate = "admin@example.com",
+                            SubjectTemplate = "【ワクチン予約Webサイト】ご予約ありがとうございます。",
+                            BodyTemplate = "{{Name}}様\r\n\r\n当システムをご利用いただき、誠にありがとうございます。\r\n予約を以下の通り承りました。\r\n\r\n予約ID: {{AppointmentId}}\r\n予約日: {{Date}}\r\nお時間: {{FromTime}} - {{ToTime}}\r\n\r\n当日は所定の時間までにお越しください。\r\n\r\n本メールには返信してもお返事が出来ませんのでご了承願います。\r\n\r\n----------------------------------\r\nワクチン予約Webサイト\r\n",
                         });
                         db.SaveChanges();
                     }

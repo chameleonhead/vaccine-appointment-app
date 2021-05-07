@@ -103,4 +103,42 @@
             </div>
         </div>
     </div>
+    <div class="card my-3">
+        <div class="card-body p-3">
+            <h4 class="card-title m-0">予約時のメールテンプレート</h4>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <div class="row align-items-center">
+                    <div class="col-3"><b>差出人</b></div>
+                    <div class="col-9">
+                        <input class="form-control" asp-for="AppointmentAcceptedMessageFromTemplate" />
+                    </div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="row align-items-center">
+                    <div class="col-3"><b>件名</b></div>
+                    <div class="col-9">
+                        <input class="form-control" asp-for="AppointmentAcceptedMessageSubjectTemplate" />
+                    </div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="row align-items-center">
+                    <div class="col-3"><b>本文テンプレート</b></div>
+                    <div class="col-9">
+                        <textarea class="form-control" rows="10" asp-for="AppointmentAcceptedMessageBodyTemplate"></textarea>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <div class="card-footer bg-white">
+            <div class="row no-gutters">
+                <div class="col-auto mr-2">
+                    <button class="btn btn-primary" asp-page-handler="AppointmentAcceptedMessageEmailTemplate">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </form>
