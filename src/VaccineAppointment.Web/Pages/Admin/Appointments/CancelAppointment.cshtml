@@ -1,5 +1,5 @@
 ﻿@page
-@model AppointmentDetailsModel
+@model CancelAppointmentModel
 @{
     ViewData["Title"] = "予約管理";
     var selectedDate = Model.SelectedDate;
@@ -9,6 +9,20 @@
 
 <h1>予約管理</h1>
 
+<hr />
+<div class="row">
+    <div class="col-lg-4">
+    </div>
+    <div class="col-lg-8">
+        <form class="mr-2" method="post">
+            <div class="d-flex justify-content-between">
+                <p>以下の予約を削除します。本当によろしいですか？</p>
+            </div>
+            <button class="btn btn-sm btn-outline-danger">OK</button>
+        </form>
+    </div>
+</div>
+<hr />
 <partial name="_Navigation" model="@(new NavigationViewModel(selectedDate, "Index") { BackPage = "SlotDetails", SlotId = slot.Id, DayNavigationDisabled = true })" />
 <div class="row">
     <div class="col-lg-4">

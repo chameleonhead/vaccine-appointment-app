@@ -171,5 +171,17 @@ namespace VaccineAppointment.Web.Services.Scheduling
             });
             return MakeAppointmentResult.Ok(appointmentId);
         }
+
+        public async Task<OperationResult> DeleteAppointmentAsync(string id)
+        {
+            var aggregate = await FindAppointmentByIdAsync(id);
+            if (aggregate == null)
+            {
+                return OperationResult.Fail("予約が存在しません。");
+            }
+            aggregate.RemoveAppointment(id);
+            await _repository.UpdateAsync(aggregate);
+            return OperationResult.Ok();
+        }
     }
 }

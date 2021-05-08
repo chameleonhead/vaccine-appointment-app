@@ -21,7 +21,7 @@
     <div class="col-lg-4">
     </div>
     <div class="col-lg-8">
-        <form class="mr-2" method="post" asp-action="DeleteSlot" asp-route-year="@selectedDate.Year" asp-route-month="@selectedDate.Month" asp-route-day="@selectedDate.Day" asp-route-id="@slot.Id">
+        <form class="mr-2" method="post">
             <div class="d-flex justify-content-between">
                 <p>予約枠を削除します。よろしいですか？</p>
             </div>
@@ -30,6 +30,7 @@
     </div>
 </div>
 <hr />
+
 <partial name="_Navigation" model="@(new NavigationViewModel(selectedDate, "Index") { BackPage = "SlotDetails", SlotId = slot.Id, DayNavigationDisabled = true })" />
 <div class="row">
     <div class="col-lg-4">
@@ -38,6 +39,11 @@
     <div class="col-lg-8">
         <div class="d-flex justify-content-between">
             <h3 class="mb-1">@LocalTimePattern.CreateWithInvariantCulture("HH:mm").Format(slot.From.TimeOfDay) - @LocalTimePattern.CreateWithInvariantCulture("HH:mm").Format(slot.To.TimeOfDay)</h3>
+            <div class="d-flex align-items-center">
+                <a class="btn btn-sm btn-outline-secondary @(slot.CanCreateAppointment ? "" : "disabled") mr-2" asp-page="CreateAppointment" asp-route-year="@selectedDate.Year" asp-route-month="@selectedDate.Month" asp-route-day="@selectedDate.Day" asp-route-id="@slot.Id">予約登録</a>
+                <a class="btn btn-sm btn-outline-danger @(slot.CanDelete ? "" : "disabled") mr-2" asp-page="DeleteSlot" asp-route-year="@selectedDate.Year" asp-route-month="@selectedDate.Month" asp-route-day="@selectedDate.Day" asp-route-id="@slot.Id">削除</a>
+                <a class="btn btn-sm btn-outline-primary @(slot.CanUpdate ? "" : "disabled")" asp-page="EditSlot" asp-route-year="@selectedDate.Year" asp-route-month="@selectedDate.Month" asp-route-day="@selectedDate.Day" asp-route-id="@slot.Id">編集</a>
+            </div>
         </div>
         <h5 class="font-weight-bold">詳細</h5>
         <div class="list-group">
@@ -67,13 +73,13 @@
             <div class="list-group">
                 @foreach (var appointment in slot.Appointments)
                 {
-                    <div class="list-group-item">
+                    <a class="list-group-item list-group-item-action" asp-page="AppointmentDetails" asp-route-year="@selectedDate.Year" asp-route-month="@selectedDate.Month" asp-route-day="@selectedDate.Day" asp-route-slotId="@slot.Id" asp-route-id="@appointment.Id">
                         <div class="d-flex w-100 justify-content-between">
                             <h5 class="mb-1">@appointment.Name</h5>
                         </div>
                         <div class="row">
                             <div class="col-4">メールアドレス</div>
-                            <div class="col-8"><a href="mailto:@appointment.Email">@appointment.Email</a></div>
+                            <div class="col-8">@appointment.Email</div>
                         </div>
                         <div class="row">
                             <div class="col-4">年齢</div>
@@ -83,8 +89,7 @@
                             <div class="col-4">性別</div>
                             <div class="col-8">@appointment.Sex</div>
                         </div>
-                        <div><a class="btn btn-outline-dark" asp-page="Appointment" asp-route-id="@slot.Id">詳細</a></div>
-                    </div>
+                    </a>
                 }
             </div>
         }
@@ -94,5 +99,3 @@
         }
     </div>
 </div>
-
-

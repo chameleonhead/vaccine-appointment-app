@@ -80,5 +80,15 @@ namespace VaccineAppointment.Web.Models.Scheduling
             });
             return appointmentId;
         }
+
+        public void RemoveAppointment(string id)
+        {
+            var appointment = Appointments.FirstOrDefault(a => a.Id == id);
+            if (appointment == null)
+            {
+                throw new InvalidOperationException("Appointment not found.");
+            }
+            Appointments.Remove(appointment);
+        }
     }
 }
