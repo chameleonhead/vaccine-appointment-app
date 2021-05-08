@@ -21,8 +21,8 @@
                 {
                     <a class="list-group-item list-group-item-action" asp-page="SlotDetails" asp-route-year="@selectedDate.Year" asp-route-month="@selectedDate.Month" asp-route-day="@selectedDate.Day" asp-route-id="@slot.Id">
                         <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">予約枠 @slot.From.TimeOfDay - @slot.To.TimeOfDay</h5>
-                            <small>(@slot.CountOfSlot 人)</small>
+                            <h5 class="mb-1">@LocalTimePattern.CreateWithInvariantCulture("HH:mm").Format(slot.From.TimeOfDay) - @LocalTimePattern.CreateWithInvariantCulture("HH:mm").Format(slot.To.TimeOfDay)</h5>
+                            <small><b>枠数</b> @slot.CountOfSlot</small>
                         </div>
                         @if (slot.Appointments.Any())
                         {

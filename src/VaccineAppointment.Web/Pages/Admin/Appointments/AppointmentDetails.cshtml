@@ -16,7 +16,7 @@
     </div>
     <div class="col-lg-8">
         <div class="d-flex justify-content-between">
-            <h3 class="mb-1">予約枠 @slot.From.TimeOfDay - @slot.To.TimeOfDay</h3>
+            <h3 class="mb-1">@LocalTimePattern.CreateWithInvariantCulture("HH:mm").Format(slot.From.TimeOfDay) - @LocalTimePattern.CreateWithInvariantCulture("HH:mm").Format(slot.To.TimeOfDay)</h3>
             <div class="d-flex align-items-center">
                 <a class="btn btn-sm btn-outline-danger" asp-page="CancelAppointment" asp-route-year="@selectedDate.Year" asp-route-month="@selectedDate.Month" asp-route-day="@selectedDate.Day" asp-route-id="@slot.Id">キャンセル</a>
             </div>

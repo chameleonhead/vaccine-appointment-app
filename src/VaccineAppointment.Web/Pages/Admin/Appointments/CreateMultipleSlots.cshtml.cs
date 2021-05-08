@@ -74,6 +74,31 @@ namespace VaccineAppointment.Web.Pages.Admin.Appointments
             return PageResult(year, month, day);
         }
 
+        public IActionResult OnPostSelectAll([FromQuery] int? year, [FromQuery] int? month, [FromQuery] int? day)
+        {
+            if (!year.HasValue || !month.HasValue || !day.HasValue)
+            {
+                return RedirectToPage("Index", new { year, month, day });
+            }
+            var pageResult = PageResult(year.Value, month.Value, day.Value);
+            SelectedDates.Clear();
+            foreach (var date in SelectedDate.ToYearMonth().ToDateInterval())
+            {
+                SelectedDates.Add(LocalDatePattern.CreateWithInvariantCulture("yyyy-MM-dd").Format(date));
+            }
+            return pageResult;
+        }
+
+        public IActionResult OnPostClearSelection([FromQuery] int? year, [FromQuery] int? month, [FromQuery] int? day)
+        {
+            if (!year.HasValue || !month.HasValue || !day.HasValue)
+            {
+                return RedirectToPage("Index", new { year, month, day });
+            }
+            SelectedDates.Clear();
+            return PageResult(year.Value, month.Value, day.Value);
+        }
+
         public async Task<IActionResult> OnPost([FromQuery] int year, [FromQuery] int month, [FromQuery] int day)
         {
             if (!ModelState.IsValid)

@@ -7,6 +7,13 @@
     var slot = Model.Slot!;
 }
 
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert alert-danger">
+        @Model.ErrorMessage
+    </div>
+}
+
 <h1>予約管理</h1>
 
 <hr />
@@ -30,7 +37,7 @@
     </div>
     <div class="col-lg-8">
         <div class="d-flex justify-content-between">
-            <h3 class="mb-1">予約枠 @slot.From.TimeOfDay - @slot.To.TimeOfDay</h3>
+            <h3 class="mb-1">@LocalTimePattern.CreateWithInvariantCulture("HH:mm").Format(slot.From.TimeOfDay) - @LocalTimePattern.CreateWithInvariantCulture("HH:mm").Format(slot.To.TimeOfDay)</h3>
         </div>
         <h5 class="font-weight-bold">詳細</h5>
         <div class="list-group">
@@ -38,6 +45,18 @@
                 <div class="row">
                     <div class="col-4 text-right"><b>受入可能件数</b></div>
                     <div class="col-8">@slot.CountOfSlot</div>
+                </div>
+            </div>
+            <div class="list-group-item">
+                <div class="row">
+                    <div class="col-4 text-right"><b>予約数</b></div>
+                    <div class="col-8">@slot.Appointments.Count</div>
+                </div>
+            </div>
+            <div class="list-group-item">
+                <div class="row">
+                    <div class="col-4 text-right"><b>残り受入可能件数</b></div>
+                    <div class="col-8">@slot.RemainingSlots</div>
                 </div>
             </div>
         </div>
