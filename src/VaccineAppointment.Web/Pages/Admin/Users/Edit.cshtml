@@ -7,22 +7,35 @@
 
 <h1>ユーザー管理</h1>
 
+<hr />
+<div class="my-2 row justify-content-between">
+    <div class="col-auto">
+        <a class="btn btn-outline-secondary" asp-page="./Details" asp-route-id="@Model.UserDetail.Id">戻る</a>
+    </div>
+</div>
+<h5><b>編集</b></h5>
 <div class="row">
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Username" class="control-label"></label>
-                <input type="text" asp-for="Username" class="form-control" />
-                <span asp-validation-for="Username" class="text-danger"></span>
+                <label asp-for="Name" class="control-label">名前</label>
+                <input type="text" asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
+                <label class="control-label">ユーザー名</label>
+                <p class="form-control form-control-plaintext">@Model.UserDetail.Username</p>
+                <input style="display:none" type="text" class="form-control" value="@Model.UserDetail.Username" autocomplete="username" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label">パスワード</label>
                 <input type="password" asp-for="Password" class="form-control" />
                 <span asp-validation-for="Password" class="text-danger"></span>
+                <div class="form-text text-muted">変更しない場合は空欄にしてください。</div>
             </div>
             <div class="form-group">
-                <label asp-for="Role" class="control-label"></label>
+                <label asp-for="Role" class="control-label">役割</label>
                 <select asp-for="Role" class="form-control">
                     <option value="User">User</option>
                     <option value="Administrator">Administrator</option>
@@ -30,13 +43,8 @@
                 <span asp-validation-for="Role" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <button type="submit" class="btn btn-primary">登録</button>
             </div>
         </form>
     </div>
 </div>
-
-<div>
-    <a asp-page="./Index">Back to List</a>
-</div>
-

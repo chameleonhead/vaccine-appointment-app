@@ -65,24 +65,33 @@ namespace VaccineAppointment.Web.Services.Users
             {
                 return OperationResult.Fail("ユーザーが見つかりません。");
             }
+            if (user.Username == "admin")
+            {
+                return OperationResult.Fail("管理者は削除できません。");
+            }
             await _repository.RemoveAsync(id);
             return OperationResult.Ok();
         }
 
-        public async Task<OperationResult> CreateAsync(string username, string password, string role)
+        public async Task<OperationResult> CreateAsync(string username, string password, string role, string name)
         {
-            await _repository.AddAsync(new User(username, password, role));
+            await _repository.AddAsync(new User(username, password, role, name));
             return OperationResult.Ok();
         }
 
-        public async Task<OperationResult> UpdateAsync(string id, string? password, string role)
+        public async Task<OperationResult> UpdateAsync(string id, string? password, string role, string name)
         {
             var user = await _repository.FindByIdAsync(id);
             if (user == null)
             {
                 return OperationResult.Fail("ユーザーが見つかりません。");
             }
+            if (user.Username == "admin")
+            {
+                return OperationResult.Fail("管理者は変更できません。パスワードの変更はパスワード変更画面より実施してください。");
+            }
 
+            user.ChangeName(name);
             if (!string.IsNullOrEmpty(password))
             {
                 user.ChangePassword(_passwordHasher.Hash(password));

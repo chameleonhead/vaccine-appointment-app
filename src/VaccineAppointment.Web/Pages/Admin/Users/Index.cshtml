@@ -1,43 +1,25 @@
 ﻿@page
 @model IndexModel
 
-@{ 
+@{
     ViewData["Title"] = "ユーザー管理";
 }
 
 <h1>ユーザー管理</h1>
 
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Users[0].Username)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Users[0].Role)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Users)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Username)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Role)
-                </td>
-                <td>
-                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<hr />
+<div class="my-2 row justify-content-between">
+    <div class="col-auto">
+        <a class="btn btn-outline-secondary" asp-page="Create">新規登録</a>
+    </div>
+</div>
+<div class="list-group">
+    @foreach (var user in Model.Users)
+    {
+        <a asp-page="./Details" asp-route-id="@user.Id" class="list-group-item list-group-item-action">
+            <h5>@user.Name</h5>
+            <p class="mb-0"><b>ユーザー名</b> @user.Username</p>
+            <p class="mb-0"><b>役割</b> @user.Role</p>
+        </a>
+    }
+</div>

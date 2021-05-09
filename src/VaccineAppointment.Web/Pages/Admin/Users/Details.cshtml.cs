@@ -15,6 +15,7 @@ namespace VaccineAppointment.Web.Pages.Admin.Users
         private readonly UserService _service;
 
         public User UserDetail { get; set; }
+        public string? ErrorMessage { get; set; }
 
         public DetailsModel(ILogger<IndexModel> logger, UserService service)
         {
@@ -35,6 +36,7 @@ namespace VaccineAppointment.Web.Pages.Admin.Users
             {
                 return NotFound();
             }
+            ErrorMessage = TempData["ErrorMessage"] as string;
             return Page();
         }
     }

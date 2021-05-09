@@ -14,6 +14,7 @@ namespace VaccineAppointment.Web.Pages.Admin.Users
         private readonly ILogger<IndexModel> _logger;
         private readonly UserService _service;
 
+        public string? ErrorMessage { get; private set; }
         public User UserDetail { get; set; }
 
         public DeleteModel(ILogger<IndexModel> logger, UserService service)
@@ -45,7 +46,12 @@ namespace VaccineAppointment.Web.Pages.Admin.Users
                 return NotFound();
             }
 
-            await _service.DeleteUserAsync(id);
+            var result = await _service.DeleteUserAsync(id);
+            if (!result.Succeeded)
+            {
+                TempData["ErrorMessage"] = result.ErrorMessage;
+                return RedirectToPage("./Details", new { id });
+            }
             return RedirectToPage("./Index");
         }
     }

@@ -62,7 +62,7 @@ namespace VaccineAppointment.Web
                 using (var db = scope.ServiceProvider.GetRequiredService<VaccineAppointmentContext>())
                 {
                     var hasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
-                    db.Database.EnsureCreated();
+                    db.Database.Migrate();
                     if (!db.Users.Any())
                     {
                         db.Users.Add(new User()
@@ -70,6 +70,7 @@ namespace VaccineAppointment.Web
                             Username = "admin",
                             Password = hasher.Hash("P@ssw0rd"),
                             Role = "Administrator",
+                            Name = "管理者",
                         });
                         db.SaveChanges();
                     }
