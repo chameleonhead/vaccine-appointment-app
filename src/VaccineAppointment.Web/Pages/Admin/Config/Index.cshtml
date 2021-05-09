@@ -71,7 +71,7 @@
                 <div class="row align-items-center">
                     <div class="col-3"><b>ユーザー名</b></div>
                     <div class="col-9">
-                        <input class="form-control" asp-for="Username" />
+                        <input class="form-control" asp-for="Username" autocomplete="off" />
                     </div>
                 </div>
             </li>
@@ -79,7 +79,7 @@
                 <div class="row align-items-center">
                     <div class="col-3"><b>パスワード</b></div>
                     <div class="col-9">
-                        <input class="form-control" type="password" asp-for="Password" />
+                        <input class="form-control" type="password" asp-for="Password" value="@Model.Password" autocomplete="off" />
                     </div>
                 </div>
             </li>
